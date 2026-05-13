@@ -8,6 +8,8 @@ function App() {
 
   // On every page load, check the server for an active session cookie.
   // React state doesn't survive a refresh; session cookies do.
+
+  // On page load check server for active session/ logged in.
   useEffect(() => {
     const checkForSession = async () => {
       const { data: user } = await getMe();
@@ -16,9 +18,9 @@ function App() {
     checkForSession();
   }, []);
 
-  // Handlers that manage updating the current user. 
-  // Defined in App to ensure that child components only                       
-  // update the current user in a controlled manner.  
+  // Handlers that manage updating the current user.
+  // Defined in App to ensure that child components only
+  // update the current user in a controlled manner.
   const handleLogin = async (username, password) => {
     const { data: user, error } = await login(username, password);
     if (error) return error;
@@ -39,10 +41,11 @@ function App() {
   return (
     <main>
       <h1>Todo App</h1>
-      {currentUser
-        ? <TodoPage currentUser={currentUser} handleLogout={handleLogout} />
-        : <AuthPage handleLogin={handleLogin} handleRegister={handleRegister} />
-      }
+      {currentUser ? (
+        <TodoPage currentUser={currentUser} handleLogout={handleLogout} />
+      ) : (
+        <AuthPage handleLogin={handleLogin} handleRegister={handleRegister} />
+      )}
     </main>
   );
 }

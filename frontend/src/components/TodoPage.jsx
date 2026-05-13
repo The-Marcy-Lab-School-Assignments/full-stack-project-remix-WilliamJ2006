@@ -12,6 +12,7 @@ function TodoPage({ currentUser, handleLogout }) {
   // It is also used within the AddTodoForm and TodoList
   // to re-fetch the todos when a mutation action is performed
   // such as creating, deleting, or updating a todo.
+  // Load courses and assignments
   const loadTodos = async () => {
     setIsLoading(true);
     setError(null);
@@ -24,6 +25,7 @@ function TodoPage({ currentUser, handleLogout }) {
     setIsLoading(false);
   };
 
+  // On mount
   useEffect(() => {
     loadTodos();
   }, []);
@@ -31,7 +33,9 @@ function TodoPage({ currentUser, handleLogout }) {
   return (
     <section>
       <div id="user-controls">
-        <span>Welcome, <strong>{currentUser.username}</strong>!</span>
+        <span>
+          Welcome, <strong>{currentUser.username}</strong>!
+        </span>
         <button onClick={handleLogout}>Log Out</button>
       </div>
       <AddTodoForm loadTodos={loadTodos} />

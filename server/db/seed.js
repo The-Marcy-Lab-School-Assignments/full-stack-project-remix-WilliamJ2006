@@ -5,7 +5,9 @@ const SALT_ROUNDS = 8;
 
 const seed = async () => {
   // Drop tables in reverse dependency order (todos references users via FK)
+  // Courses table, each student will be taking multiple courses
   await pool.query('DROP TABLE IF EXISTS todos');
+  // Users table with a role row so users will have assigned roles like student or professor
   await pool.query('DROP TABLE IF EXISTS users');
 
   await pool.query(`
@@ -32,16 +34,20 @@ const seed = async () => {
   ]);
 
   // RETURNING captures inserted user_ids so we don't hardcode them
-  const { rows: users } = await pool.query(`
+  const { rows: users } = await pool.query(
+    `
     INSERT INTO users (username, password_hash) VALUES
       ('alice', $1),
       ('bob',   $2)
     RETURNING user_id, username
-  `, [aliceHash, bobHash]);
+  `,
+    [aliceHash, bobHash],
+  );
 
   const [alice, bob] = users;
 
-  await pool.query(`
+  await pool.query(
+    `
     INSERT INTO todos (title, is_complete, user_id) VALUES
       ('Buy groceries',        FALSE, $1),
       ('Walk the dog',         FALSE, $1),
@@ -49,7 +55,9 @@ const seed = async () => {
       ('Set up the database',  TRUE,  $2),
       ('Build the API',        TRUE,  $2),
       ('Build the frontend',   FALSE, $2)
-  `, [alice.user_id, bob.user_id]);
+  `,
+    [alice.user_id, bob.user_id],
+  );
 
   return users;
 };

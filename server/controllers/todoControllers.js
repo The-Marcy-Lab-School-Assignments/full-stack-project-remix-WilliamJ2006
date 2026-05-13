@@ -1,5 +1,6 @@
 const todoModel = require('../models/todoModel');
 
+// List courses or assignments as a professor.
 module.exports.listTodos = async (req, res, next) => {
   try {
     const todos = await todoModel.listByUser(req.session.user_id);
@@ -9,6 +10,7 @@ module.exports.listTodos = async (req, res, next) => {
   }
 };
 
+// Create new course or assignment as a professor.
 module.exports.createTodo = async (req, res, next) => {
   try {
     const { title } = req.body;
@@ -20,6 +22,7 @@ module.exports.createTodo = async (req, res, next) => {
   }
 };
 
+// Update course or assignment as a professor.
 module.exports.updateTodo = async (req, res, next) => {
   try {
     const { todo_id } = req.params;
@@ -35,6 +38,7 @@ module.exports.updateTodo = async (req, res, next) => {
   }
 };
 
+// Delete course or assignment as a professor.
 module.exports.deleteTodo = async (req, res, next) => {
   try {
     const { todo_id } = req.params;

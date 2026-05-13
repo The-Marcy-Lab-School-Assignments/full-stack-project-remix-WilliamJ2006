@@ -1,7 +1,11 @@
+// Helper resusable fetch function
 const handleFetch = async (url, options = {}) => {
   try {
     const response = await fetch(url, options);
-    if (!response.ok) throw new Error(`Fetch failed. ${response.status} ${response.statusText}`);
+    if (!response.ok)
+      throw new Error(
+        `Fetch failed. ${response.status} ${response.statusText}`,
+      );
     const data = await response.json();
     return { data, error: null };
   } catch (error) {
@@ -9,10 +13,12 @@ const handleFetch = async (url, options = {}) => {
   }
 };
 
+// Fetch all courses or assignments.
 export const fetchAllTodos = async () => {
   return handleFetch('/api/todos');
 };
 
+//fetch post endpoint, pass in needed parameters to req body
 export const createTodo = async (title) => {
   return handleFetch('/api/todos', {
     method: 'POST',
@@ -21,6 +27,7 @@ export const createTodo = async (title) => {
   });
 };
 
+// Fetch patch endpoint to update course or assignment
 export const updateTodo = async (todo_id, updates) => {
   return handleFetch(`/api/todos/${todo_id}`, {
     method: 'PATCH',
@@ -29,6 +36,7 @@ export const updateTodo = async (todo_id, updates) => {
   });
 };
 
+// Fetch from delete endpoint to delete course or assignment
 export const deleteTodo = async (todo_id) => {
   return handleFetch(`/api/todos/${todo_id}`, { method: 'DELETE' });
 };
