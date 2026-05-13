@@ -1,51 +1,79 @@
 const userModel = require('../models/userModel');
 
-module.exports.register = async (req, res, next) => {
+const register = async (req, res, next) => {
   try {
-    const { username, password } = req.body;
-    if (!username || !password) {
-      return res.status(400).send({ error: 'Username and password are required.' });
+    const { username, password, email, role } = req.body;
+    if (!username || !password || !email || !role) {
+      return res.status(400).send({
+        error: 'All fields are required.',
+      });
     }
-
     const existingUser = await userModel.findByUsername(username);
     if (existingUser) {
-      return res.status(400).send({ error: 'Username already taken.' });
+      return res.status(409).send({
+        message: 'Username already taken',
+      });
     }
-
-    const user = await userModel.create(username, password);
-    req.session.user_id = user.user_id;
+    const user = await userModel.create(username, password, email, role);
+    req.session.user = {
+      user_id: user.user_id,
+      username: user.username,
+      role: user.role,
+    };
     res.status(201).send(user);
   } catch (err) {
     next(err);
   }
 };
 
-module.exports.login = async (req, res, next) => {
+const login = async (req, res, next) => {
   try {
     const { username, password } = req.body;
+    if (!username || !password) {
+      return res.status(400).send({
+        error: 'Username and password are required.',
+      });
+    }
     const user = await userModel.validatePassword(username, password);
-    if (!user) return res.status(401).send({ error: 'Invalid credentials.' });
-    req.session.user_id = user.user_id;
+    if (!user) {
+      return res.status(401).send({
+        message: 'Invalid credentials',
+      });
+    }
+    req.session.user = {
+      user_id: user.user_id,
+      username: user.username,
+      role: user.role,
+    };
     res.send(user);
   } catch (err) {
     next(err);
   }
 };
 
-// Returns the logged-in user object, or null if no session exists.
-// Returning JSON null (200) keeps the response format consistent — the frontend
-// can always call response.json() without hitting a parse error.
-module.exports.getMe = async (req, res, next) => {
+const getMe = async (req, res, next) => {
   try {
-    if (!req.session.user_id) return res.json(null);
-    const user = await userModel.find(req.session.user_id);
-    res.json(user);
+    if (!req.session.user) {
+      return res.status(401).send(null);
+    }
+    const user = await userModel.find(req.session.user.user_id);
+    if (!user) {
+      return res.status(401).send(null);
+    }
+    res.send(user);
   } catch (err) {
     next(err);
   }
 };
 
-module.exports.logout = (req, res) => {
+const logout = (req, res) => {
   req.session = null;
-  res.send({ message: 'Logged out.' });
+  res.send({ message: 'Logged out' });
+};
+
+module.exports = {
+  register,
+  login,
+  getMe,
+  logout,
 };

@@ -1,49 +1,56 @@
+import { Routes, Route, useNavigate } from 'react-router-dom';
+import './App.css';
 import { useState, useEffect } from 'react';
-import { getMe, login, register, logout } from './adapters/auth-adapters';
-import AuthPage from './components/AuthPage';
-import TodoPage from './components/TodoPage';
+
+import LoginPage from './pages/Login';
+import { authUser } from './fetch-helpers';
+
+import RegisterPage from './pages/Register';
+import DashboardPage from './pages/Dashboard';
 
 function App() {
-  const [currentUser, setCurrentUser] = useState(null);
-
-  // On every page load, check the server for an active session cookie.
-  // React state doesn't survive a refresh; session cookies do.
+  const [loggedIn, setLogIn] = useState(false);
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+  const checkLoggedIn = async () => {
+    const { data, error } = await authUser();
+    if (error) {
+      setLogIn(false);
+      setUser(null);
+      navigate('/');
+      return;
+    }
+    setLogIn(true);
+    setUser(data);
+    navigate('/dashboard');
+    console.log(data);
+  };
   useEffect(() => {
-    const checkForSession = async () => {
-      const { data: user } = await getMe();
-      setCurrentUser(user);
-    };
-    checkForSession();
+    checkLoggedIn();
   }, []);
-
-  // Handlers that manage updating the current user. 
-  // Defined in App to ensure that child components only                       
-  // update the current user in a controlled manner.  
-  const handleLogin = async (username, password) => {
-    const { data: user, error } = await login(username, password);
-    if (error) return error;
-    setCurrentUser(user);
-  };
-
-  const handleRegister = async (username, password) => {
-    const { data: user, error } = await register(username, password);
-    if (error) return error;
-    setCurrentUser(user);
-  };
-
-  const handleLogout = async () => {
-    await logout();
-    setCurrentUser(null);
-  };
-
   return (
-    <main>
-      <h1>Todo App</h1>
-      {currentUser
-        ? <TodoPage currentUser={currentUser} handleLogout={handleLogout} />
-        : <AuthPage handleLogin={handleLogin} handleRegister={handleRegister} />
-      }
-    </main>
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <LoginPage loggedIn={loggedIn} checkLoggedIn={checkLoggedIn} />
+        }
+      />
+
+      <Route
+        path="/register"
+        element={
+          <RegisterPage loggedIn={loggedIn} checkLoggedIn={checkLoggedIn} />
+        }
+      />
+
+      <Route
+        path="/dashboard"
+        element={
+          <DashboardPage loggedIn={loggedIn} checkLoggedIn={checkLoggedIn} />
+        }
+      />
+    </Routes>
   );
 }
 
