@@ -4,61 +4,198 @@ const pool = require('./pool');
 const SALT_ROUNDS = 8;
 
 const seed = async () => {
-  // Drop tables in reverse dependency order (todos references users via FK)
-  await pool.query('DROP TABLE IF EXISTS todos');
+  await pool.query('DROP TABLE IF EXISTS assignment_completions');
+  await pool.query('DROP TABLE IF EXISTS assignments');
+  await pool.query('DROP TABLE IF EXISTS enrollments');
+  await pool.query('DROP TABLE IF EXISTS courses');
   await pool.query('DROP TABLE IF EXISTS users');
 
   await pool.query(`
     CREATE TABLE users (
       user_id       SERIAL PRIMARY KEY,
-      username      TEXT UNIQUE NOT NULL,
-      password_hash TEXT NOT NULL
+      username      TEXT NOT NULL UNIQUE,
+      email         TEXT NOT NULL UNIQUE,
+      password_hash TEXT NOT NULL,
+      role          TEXT NOT NULL CHECK (role IN ('student', 'professor')),
+      created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `);
 
   await pool.query(`
-    CREATE TABLE todos (
-      todo_id     SERIAL PRIMARY KEY,
-      title       TEXT NOT NULL,
-      is_complete BOOLEAN NOT NULL DEFAULT FALSE,
-      user_id     INT REFERENCES users(user_id) ON DELETE CASCADE
+    CREATE TABLE courses (
+      course_id     SERIAL PRIMARY KEY,
+      professor_id  INTEGER NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+      course_name   TEXT NOT NULL,
+      description   TEXT,
+      created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `);
 
-  // Hash passwords in parallel — bcrypt is slow by design (CPU-bound hashing)
-  const [aliceHash, bobHash] = await Promise.all([
-    bcrypt.hash('password123', SALT_ROUNDS),
-    bcrypt.hash('password123', SALT_ROUNDS),
+  await pool.query(`
+    CREATE TABLE enrollments (
+      enrollment_id   SERIAL PRIMARY KEY,
+      student_id      INTEGER NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+      course_id       INTEGER NOT NULL REFERENCES courses(course_id) ON DELETE CASCADE,
+      created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  await pool.query(`
+    CREATE TABLE assignments (
+      assignment_id   SERIAL PRIMARY KEY,
+      name            TEXT NOT NULL,
+      course_id       INTEGER NOT NULL REFERENCES courses(course_id) ON DELETE CASCADE,
+      description     TEXT,
+      due_date        DATE,
+      created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  await pool.query(`
+    CREATE TABLE assignment_completions (
+      completion_id   SERIAL PRIMARY KEY,
+      assignment_id   INTEGER NOT NULL REFERENCES assignments(assignment_id) ON DELETE CASCADE,
+      student_id      INTEGER NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+      completed_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE (assignment_id, student_id)
+  )
+`);
+
+  const mitsuruHash = await bcrypt.hash('kirijo123', SALT_ROUNDS);
+  const yukariHash = await bcrypt.hash('archer456', SALT_ROUNDS);
+  const junpeiHash = await bcrypt.hash('ace789', SALT_ROUNDS);
+  const aigisHash = await bcrypt.hash('toaster999', SALT_ROUNDS);
+  const akihikoHash = await bcrypt.hash('boxing321', SALT_ROUNDS);
+
+  const insertUserSql = `
+    INSERT INTO users (username, email, password_hash, role)
+    VALUES ($1, $2, $3, $4)
+    RETURNING user_id;
+  `;
+
+  const mitsuruResponse = await pool.query(insertUserSql, [
+    'mitsuru',
+    'mitsuru@gekkan.edu',
+    mitsuruHash,
+    'professor',
   ]);
 
-  // RETURNING captures inserted user_ids so we don't hardcode them
-  const { rows: users } = await pool.query(`
-    INSERT INTO users (username, password_hash) VALUES
-      ('alice', $1),
-      ('bob',   $2)
-    RETURNING user_id, username
-  `, [aliceHash, bobHash]);
+  const yukariResponse = await pool.query(insertUserSql, [
+    'yukari',
+    'yukari@gekkan.edu',
+    yukariHash,
+    'student',
+  ]);
 
-  const [alice, bob] = users;
+  const junpeiResponse = await pool.query(insertUserSql, [
+    'junpei',
+    'junpei@gekkan.edu',
+    junpeiHash,
+    'student',
+  ]);
 
-  await pool.query(`
-    INSERT INTO todos (title, is_complete, user_id) VALUES
-      ('Buy groceries',        FALSE, $1),
-      ('Walk the dog',         FALSE, $1),
-      ('Read a book',          TRUE,  $1),
-      ('Set up the database',  TRUE,  $2),
-      ('Build the API',        TRUE,  $2),
-      ('Build the frontend',   FALSE, $2)
-  `, [alice.user_id, bob.user_id]);
+  const aigisResponse = await pool.query(insertUserSql, [
+    'aigis',
+    'aigis@gekkan.edu',
+    aigisHash,
+    'student',
+  ]);
 
-  return users;
+  const akihikoResponse = await pool.query(insertUserSql, [
+    'akihiko',
+    'akihiko@gekkan.edu',
+    akihikoHash,
+    'professor',
+  ]);
+
+  const mitsuruId = mitsuruResponse.rows[0].user_id;
+  const yukariId = yukariResponse.rows[0].user_id;
+  const junpeiId = junpeiResponse.rows[0].user_id;
+  const aigisId = aigisResponse.rows[0].user_id;
+  const akihikoId = akihikoResponse.rows[0].user_id;
+
+  const courseQuery = `
+    INSERT INTO courses (professor_id, course_name, description)
+    VALUES ($1, $2, $3)
+    RETURNING course_id;
+  `;
+
+  const tacticsResponse = await pool.query(courseQuery, [
+    mitsuruId,
+    'Shadow Tactics',
+    'Strategic operations and field command fundamentals.',
+  ]);
+
+  const evokerResponse = await pool.query(courseQuery, [
+    akihikoId,
+    'Persona Combat Training',
+    'Physical conditioning and Persona combat techniques.',
+  ]);
+
+  const tacticsCourseId = tacticsResponse.rows[0].course_id;
+  const evokerCourseId = evokerResponse.rows[0].course_id;
+
+  const enrollmentQuery = `
+    INSERT INTO enrollments (student_id, course_id)
+    VALUES ($1, $2);
+  `;
+
+  await pool.query(enrollmentQuery, [yukariId, tacticsCourseId]);
+  await pool.query(enrollmentQuery, [junpeiId, tacticsCourseId]);
+  await pool.query(enrollmentQuery, [aigisId, tacticsCourseId]);
+
+  await pool.query(enrollmentQuery, [yukariId, evokerCourseId]);
+  await pool.query(enrollmentQuery, [junpeiId, evokerCourseId]);
+
+  const assignmentQuery = `
+    INSERT INTO assignments (name, course_id, description, due_date)
+    VALUES ($1, $2, $3, $4)
+    RETURNING assignment_id;
+  `;
+
+  const assignmentOneResponse = await pool.query(assignmentQuery, [
+    'Tartarus Exploration Report',
+    tacticsCourseId,
+    'Write a report analyzing enemy behavior patterns in Tartarus.',
+    '2026-05-20',
+  ]);
+
+  const assignmentTwoResponse = await pool.query(assignmentQuery, [
+    'Evoker Maintenance Quiz',
+    evokerCourseId,
+    'Quiz covering proper Evoker handling procedures.',
+    '2026-05-24',
+  ]);
+
+  const assignmentThreeResponse = await pool.query(assignmentQuery, [
+    'Full Moon Operation Plan',
+    tacticsCourseId,
+    'Prepare a tactical operation strategy for the upcoming Full Moon.',
+    '2026-05-30',
+  ]);
+
+  const assignmentOneId = assignmentOneResponse.rows[0].assignment_id;
+
+  const assignmentTwoId = assignmentTwoResponse.rows[0].assignment_id;
+
+  const assignmentThreeId = assignmentThreeResponse.rows[0].assignment_id;
+
+  const completionQuery = `
+    INSERT INTO assignment_completions (assignment_id, student_id)
+    VALUES ($1, $2);
+  `;
+
+  await pool.query(completionQuery, [assignmentOneId, yukariId]);
+  await pool.query(completionQuery, [assignmentOneId, aigisId]);
+
+  await pool.query(completionQuery, [assignmentTwoId, junpeiId]);
+
+  await pool.query(completionQuery, [assignmentThreeId, yukariId]);
+
+  console.log('Database seeded.');
 };
 
 seed()
-  .then((users) => {
-    console.log('Database seeded successfully.');
-    console.log(`  Users: ${users.map((u) => u.username).join(', ')}`);
-  })
   .catch((err) => {
     console.error('Error seeding database:', err);
     process.exit(1);
