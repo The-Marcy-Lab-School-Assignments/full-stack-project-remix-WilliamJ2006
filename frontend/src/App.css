@@ -58,7 +58,7 @@ form {
 .introVideo {
   z-index: 1;
   opacity: 1;
-  transition: opacity 1s linear;
+  transition: opacity 1.239s linear;
 }
 
 .fadeOut {
