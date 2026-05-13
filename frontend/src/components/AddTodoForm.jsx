@@ -1,5 +1,7 @@
 import { createTodo } from '../adapters/todo-adapters';
 
+// Add courses and assignments for students as a teacher.
+
 function AddTodoForm({ loadTodos }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
