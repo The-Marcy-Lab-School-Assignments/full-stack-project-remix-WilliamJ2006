@@ -27,7 +27,8 @@ const seed = async () => {
       professor_id  INTEGER NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
       course_name   TEXT NOT NULL,
       description   TEXT,
-      created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      max_capacity  INTEGER NOT NULL
     )
   `);
 
@@ -58,8 +59,8 @@ const seed = async () => {
       student_id      INTEGER NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
       completed_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       UNIQUE (assignment_id, student_id)
-  )
-`);
+    )
+  `);
 
   const mitsuruHash = await bcrypt.hash('kirijo123', SALT_ROUNDS);
   const yukariHash = await bcrypt.hash('archer456', SALT_ROUNDS);
@@ -115,8 +116,13 @@ const seed = async () => {
   const akihikoId = akihikoResponse.rows[0].user_id;
 
   const courseQuery = `
-    INSERT INTO courses (professor_id, course_name, description)
-    VALUES ($1, $2, $3)
+    INSERT INTO courses (
+      professor_id,
+      course_name,
+      description,
+      max_capacity
+    )
+    VALUES ($1, $2, $3, $4)
     RETURNING course_id;
   `;
 
@@ -124,12 +130,14 @@ const seed = async () => {
     mitsuruId,
     'Shadow Tactics',
     'Strategic operations and field command fundamentals.',
+    30,
   ]);
 
   const evokerResponse = await pool.query(courseQuery, [
     akihikoId,
     'Persona Combat Training',
     'Physical conditioning and Persona combat techniques.',
+    20,
   ]);
 
   const tacticsCourseId = tacticsResponse.rows[0].course_id;
@@ -148,7 +156,12 @@ const seed = async () => {
   await pool.query(enrollmentQuery, [junpeiId, evokerCourseId]);
 
   const assignmentQuery = `
-    INSERT INTO assignments (name, course_id, description, due_date)
+    INSERT INTO assignments (
+      name,
+      course_id,
+      description,
+      due_date
+    )
     VALUES ($1, $2, $3, $4)
     RETURNING assignment_id;
   `;
@@ -175,13 +188,14 @@ const seed = async () => {
   ]);
 
   const assignmentOneId = assignmentOneResponse.rows[0].assignment_id;
-
   const assignmentTwoId = assignmentTwoResponse.rows[0].assignment_id;
-
   const assignmentThreeId = assignmentThreeResponse.rows[0].assignment_id;
 
   const completionQuery = `
-    INSERT INTO assignment_completions (assignment_id, student_id)
+    INSERT INTO assignment_completions (
+      assignment_id,
+      student_id
+    )
     VALUES ($1, $2);
   `;
 

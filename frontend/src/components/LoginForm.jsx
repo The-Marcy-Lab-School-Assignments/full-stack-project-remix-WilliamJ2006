@@ -1,4 +1,4 @@
-import { loginUser } from '../fetch-helpers';
+import { loginUser } from '../adapters/auth-adapters';
 
 const LoginForm = ({ checkLoggedIn }) => {
   const handleSubmit = async (e) => {

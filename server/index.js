@@ -22,6 +22,9 @@ const {
 
 const {
   listUsers,
+  listUsersByRole,
+  listStudentsByProfessorCourses,
+  listProfessorsByStudentCourses,
   updateUser,
   deleteUser,
 } = require('./controllers/userControllers');
@@ -66,7 +69,23 @@ app.delete('/api/auth/logout', logout);
 // User routes
 // ====================================
 app.get('/api/users', listUsers);
+
+app.post('/api/users/role', listUsersByRole);
+
+app.get(
+  '/api/users/:user_id/students',
+  checkAuthentication,
+  listStudentsByProfessorCourses,
+);
+
+app.get(
+  '/api/users/:user_id/professors',
+  checkAuthentication,
+  listProfessorsByStudentCourses,
+);
+
 app.patch('/api/users/:user_id', checkAuthentication, updateUser);
+
 app.delete('/api/users/:user_id', checkAuthentication, deleteUser);
 
 // ====================================

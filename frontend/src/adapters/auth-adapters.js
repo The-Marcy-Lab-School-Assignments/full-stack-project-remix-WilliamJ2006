@@ -8,11 +8,6 @@ const handleFetch = async (url, config) => {
   }
 };
 
-export const fetchUsers = async () => {
-  const url = '/api/users';
-  return await handleFetch(url);
-};
-
 export const loginUser = async (username, password) => {
   const url = '/api/auth/login';
   const config = {

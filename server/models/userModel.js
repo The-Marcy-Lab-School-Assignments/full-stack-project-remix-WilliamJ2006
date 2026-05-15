@@ -10,6 +10,76 @@ module.exports.list = async () => {
   return rows;
 };
 
+module.exports.listByRole = async (role) => {
+  const { rows } = await pool.query(
+    `
+    SELECT
+      users.user_id,
+      users.username,
+      users.email,
+      users.role,
+      courses.course_id,
+      courses.course_name
+    FROM users
+    LEFT JOIN courses
+      ON users.user_id = courses.professor_id
+    WHERE users.role = $1
+    ORDER BY users.user_id
+    `,
+    [role],
+  );
+
+  return rows;
+};
+
+module.exports.listUserByEnrollments = async (user_id) => {
+  const { rows } = await pool.query(
+    `
+    SELECT DISTINCT
+      users.user_id,
+      users.username,
+      users.email,
+      users.role,
+      courses.course_id,
+      courses.course_name
+    FROM courses
+    JOIN enrollments
+      ON courses.course_id = enrollments.course_id
+    JOIN users
+      ON enrollments.student_id = users.user_id
+    WHERE courses.professor_id = $1
+    ORDER BY users.username
+    `,
+    [user_id],
+  );
+
+  return rows;
+};
+
+module.exports.listUsersByCourses = async (user_id) => {
+  const { rows } = await pool.query(
+    `
+    SELECT DISTINCT
+      users.user_id,
+      users.username,
+      users.email,
+      users.role,
+      courses.course_id,
+      courses.course_name
+    FROM enrollments
+    JOIN courses
+      ON enrollments.course_id = courses.course_id
+    JOIN users
+      ON courses.professor_id = users.user_id
+    WHERE enrollments.student_id = $1
+    ORDER BY courses.course_name
+    `,
+    [user_id],
+  );
+
+  return rows;
+};
+
 module.exports.find = async (user_id) => {
   const { rows } = await pool.query(
     `SELECT user_id, username, email, role FROM users WHERE user_id = $1`,
