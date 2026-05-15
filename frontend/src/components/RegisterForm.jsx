@@ -1,4 +1,4 @@
-import { createUser } from '../fetch-helpers';
+import { createUser } from '../adapters/auth-adapters';
 
 const ROLES = ['student', 'professor'];
 

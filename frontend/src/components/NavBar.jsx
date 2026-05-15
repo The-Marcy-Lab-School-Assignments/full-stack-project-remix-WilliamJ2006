@@ -1,33 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { logoutUser } from '../fetch-helpers';
 
-function NavBar({ page, loggedIn, checkLoggedIn }) {
+function NavBar({ page, loggedIn, user }) {
   if (loggedIn) {
-    const handleClick = async () => {
-      const { error } = await logoutUser();
-      if (error) return console.error(error);
-      await checkLoggedIn();
-    };
     return (
-      <ul className="navBar">
+      <ul style={{ position: 'absolute' }} className="navBar">
         <li>
-          <h1 className="logo">Assignment Tracker - length</h1>
+          <h1 style={{ color: 'black' }} className="logo">
+            {user?.username} - {user?.role}
+          </h1>
         </li>
-        <ul className="navLinks">
-          <li>
-            <button>Home</button>
-          </li>
-          <li>
-            <button>Assignments</button>
-          </li>
-          <li>
-            <button>Instructors</button>
-          </li>
-          <li>
-            <button onClick={handleClick}>Main Menu</button>
-          </li>
-        </ul>
       </ul>
     );
   }

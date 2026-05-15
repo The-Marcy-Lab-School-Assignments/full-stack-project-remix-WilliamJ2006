@@ -1,0 +1,506 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@1,900&family=Orbitron:wght@500;700;900&display=swap');
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+
+  background: black;
+  color: white;
+
+  font-family:
+    'Orbitron',
+    sans-serif;
+}
+
+main {
+  background: black;
+}
+
+ul {
+  list-style: none;
+}
+
+nav .navBar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  position: relative;
+  z-index: 1;
+}
+
+.navLinks {
+  display: flex;
+  gap: 10px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+
+  margin: auto;
+
+  width: 25vw;
+  height: 50vh;
+
+  gap: 15px;
+
+  padding: 25px;
+
+  background: #005dff;
+}
+
+/* =============================================
+   VIDEO
+============================================= */
+
+.backgroundVideo {
+  position: fixed;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+.introVideo {
+  z-index: 1;
+
+  opacity: 1;
+
+  transition:
+    opacity 1.239s linear;
+}
+
+.fadeOut {
+  opacity: 0;
+
+  pointer-events: none;
+}
+
+/* =============================================
+   DASHBOARD WRAPPER
+============================================= */
+
+.dashboardButtons {
+  position: fixed;
+  z-index: 9999;
+
+  top: 50%;
+  left: 38%;
+
+  transform: translateY(-50%);
+
+  margin: 0;
+  padding: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 2px;
+
+  pointer-events: all;
+}
+
+/* =============================================
+   FADE IN
+============================================= */
+
+@keyframes buttonFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* =============================================
+   UNDERWATER FLOATING
+============================================= */
+
+@keyframes underwaterFloat1 {
+  0% {
+    transform:
+      rotate(-6deg)
+      translateY(0px);
+  }
+
+  50% {
+    transform:
+      rotate(-6deg)
+      translateY(-4px);
+  }
+
+  100% {
+    transform:
+      rotate(-6deg)
+      translateY(0px);
+  }
+}
+
+@keyframes underwaterFloat2 {
+  0% {
+    transform:
+      rotate(3deg)
+      translateX(14px)
+      translateY(0px);
+  }
+
+  50% {
+    transform:
+      rotate(3deg)
+      translateX(14px)
+      translateY(3px);
+  }
+
+  100% {
+    transform:
+      rotate(3deg)
+      translateX(14px)
+      translateY(0px);
+  }
+}
+
+@keyframes underwaterFloat3 {
+  0% {
+    transform:
+      rotate(-2deg)
+      translateX(22px)
+      translateY(0px);
+  }
+
+  50% {
+    transform:
+      rotate(-2deg)
+      translateX(22px)
+      translateY(-5px);
+  }
+
+  100% {
+    transform:
+      rotate(-2deg)
+      translateX(22px)
+      translateY(0px);
+  }
+}
+
+@keyframes underwaterFloat4 {
+  0% {
+    transform:
+      rotate(5deg)
+      translateX(10px)
+      translateY(0px);
+  }
+
+  50% {
+    transform:
+      rotate(5deg)
+      translateX(10px)
+      translateY(4px);
+  }
+
+  100% {
+    transform:
+      rotate(5deg)
+      translateX(10px)
+      translateY(0px);
+  }
+}
+
+@keyframes underwaterFloat5 {
+  0% {
+    transform:
+      rotate(1deg)
+      translateX(30px)
+      translateY(0px);
+  }
+
+  50% {
+    transform:
+      rotate(1deg)
+      translateX(30px)
+      translateY(-4px);
+  }
+
+  100% {
+    transform:
+      rotate(1deg)
+      translateX(30px)
+      translateY(0px);
+  }
+}
+
+/* =============================================
+   BUTTON ITEMS
+============================================= */
+
+.dashboardButtons li {
+  display: block;
+
+  position: relative;
+
+  transform-origin: left center;
+
+  opacity: 0;
+
+  animation-fill-mode: forwards;
+}
+
+.dashboardButtons li:nth-child(1) {
+  animation:
+    buttonFadeIn 0.8s ease forwards,
+    underwaterFloat1 2.61s ease-in-out infinite;
+
+  animation-delay:
+    0.1s,
+    -2.17s;
+}
+
+.dashboardButtons li:nth-child(2) {
+  animation:
+    buttonFadeIn 0.8s ease forwards,
+    underwaterFloat2 6.82s ease-in-out infinite;
+
+  animation-delay:
+    0.28s,
+    -5.74s;
+}
+
+.dashboardButtons li:nth-child(3) {
+  animation:
+    buttonFadeIn 0.8s ease forwards,
+    underwaterFloat3 3.54s ease-in-out infinite;
+
+  animation-delay:
+    0.46s,
+    -1.08s;
+}
+
+.dashboardButtons li:nth-child(4) {
+  animation:
+    buttonFadeIn 0.8s ease forwards,
+    underwaterFloat4 8.11s ease-in-out infinite;
+
+  animation-delay:
+    0.64s,
+    -6.93s;
+}
+
+.dashboardButtons li:nth-child(5) {
+  animation:
+    buttonFadeIn 0.8s ease forwards,
+    underwaterFloat5 4.93s ease-in-out infinite;
+
+  animation-delay:
+    0.82s,
+    -3.88s;
+}
+
+/* =============================================
+   BUTTON BASE
+============================================= */
+
+.dashboardButtons li button {
+  position: relative;
+
+  display: block;
+
+  padding:
+    4px
+    36px
+    4px
+    28px;
+
+  border: none;
+  background: transparent;
+
+  cursor: pointer;
+
+  isolation: isolate;
+
+  line-height: 1.05;
+
+  transition:
+    transform 0.12s ease;
+}
+
+/* =============================================
+   RED TRIANGLE
+============================================= */
+
+.dashboardButtons li button::before {
+  content: '';
+
+  position: absolute;
+
+  inset: -16px -38px -2px -20px;
+
+  background:
+    rgba(235, 80, 115, 0.82);
+
+  clip-path:
+    polygon(
+      100% 100%,
+      0% 100%,
+      100% 0%
+    );
+
+  transform: rotate(-6deg);
+
+  opacity: 0;
+
+  transition:
+    opacity 0.12s ease;
+
+  z-index: -2;
+}
+
+/* =============================================
+   WHITE TRIANGLE
+============================================= */
+
+.dashboardButtons li button::after {
+  content: '';
+
+  position: absolute;
+
+  inset: -10px -24px -2px -14px;
+
+  background:
+    rgba(255, 255, 255, 0.65);
+
+  clip-path:
+    polygon(
+      85% 100%,
+      0% 100%,
+      100% 0%
+    );
+
+  opacity: 0;
+
+  transition:
+    opacity 0.12s ease;
+
+  z-index: -1;
+}
+
+/* =============================================
+   BUTTON TEXT
+============================================= */
+
+.dashboardButtons li button span {
+  display: block;
+
+  position: relative;
+  z-index: 1;
+
+  font-family:
+    'Barlow Condensed',
+    sans-serif;
+
+  font-weight: 900;
+  font-style: italic;
+
+  text-transform: uppercase;
+
+  letter-spacing: 1px;
+
+  transition:
+    color 0.12s ease,
+    opacity 0.12s ease,
+    text-shadow 0.12s ease;
+
+  -webkit-text-stroke:
+    1px rgba(0, 80, 120, 0.35);
+
+  text-shadow:
+    2px 2px 0px rgba(0, 50, 100, 0.5),
+    0 0 18px rgba(0, 180, 255, 0.18);
+}
+
+/* =============================================
+   SIZES + COLORS
+============================================= */
+
+.dashboardButtons li:nth-child(1) button span {
+  font-size: 4rem;
+  color: #00baeb;
+}
+
+.dashboardButtons li:nth-child(2) button span {
+  font-size: 3.5rem;
+  color: #00d8ff;
+}
+
+.dashboardButtons li:nth-child(3) button span {
+  font-size: 3.15rem;
+  color: #0078c8;
+}
+
+.dashboardButtons li:nth-child(4) button span {
+  font-size: 2.8rem;
+  color: #22d4fc;
+}
+
+.dashboardButtons li:nth-child(5) button span {
+  font-size: 2.5rem;
+  color: #008fcc;
+}
+
+/* =============================================
+   DIM OTHER ITEMS
+============================================= */
+
+.dashboardButtons:hover li button span {
+  opacity: 0.22;
+
+  filter:
+    brightness(0.5)
+    saturate(0.6);
+
+  text-shadow: none;
+}
+
+/* =============================================
+   ACTIVE ITEM
+============================================= */
+
+.dashboardButtons li button:hover,
+.dashboardButtons li button:focus-visible {
+  transform:
+    translateX(6px);
+
+  outline: none;
+}
+
+.dashboardButtons li button:hover::before,
+.dashboardButtons li button:focus-visible::before {
+  opacity: 1;
+}
+
+.dashboardButtons li button:hover::after,
+.dashboardButtons li button:focus-visible::after {
+  opacity: 1;
+}
+
+.dashboardButtons li button:hover span,
+.dashboardButtons li button:focus-visible span {
+  color: #0d0d0d;
+
+  opacity: 1;
+
+  filter: none;
+
+  -webkit-text-stroke: 0;
+
+  text-shadow: none;
+}

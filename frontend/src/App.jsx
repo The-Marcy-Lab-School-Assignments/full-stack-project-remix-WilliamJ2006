@@ -1,9 +1,9 @@
 import { Routes, Route, useNavigate } from 'react-router-dom';
-import './App.css';
+import './css/App.css';
 import { useState, useEffect } from 'react';
 
 import LoginPage from './pages/Login';
-import { authUser } from './fetch-helpers';
+import { authUser } from './adapters/auth-adapters';
 
 import RegisterPage from './pages/Register';
 import DashboardPage from './pages/Dashboard';
@@ -47,7 +47,11 @@ function App() {
       <Route
         path="/dashboard"
         element={
-          <DashboardPage loggedIn={loggedIn} checkLoggedIn={checkLoggedIn} />
+          <DashboardPage
+            loggedIn={loggedIn}
+            checkLoggedIn={checkLoggedIn}
+            user={user}
+          />
         }
       />
     </Routes>
