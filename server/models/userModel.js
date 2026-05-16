@@ -13,16 +13,12 @@ module.exports.list = async () => {
 module.exports.listByRole = async (role) => {
   const { rows } = await pool.query(
     `
-    SELECT
+    SELECT DISTINCT
       users.user_id,
       users.username,
       users.email,
-      users.role,
-      courses.course_id,
-      courses.course_name
+      users.role
     FROM users
-    LEFT JOIN courses
-      ON users.user_id = courses.professor_id
     WHERE users.role = $1
     ORDER BY users.user_id
     `,

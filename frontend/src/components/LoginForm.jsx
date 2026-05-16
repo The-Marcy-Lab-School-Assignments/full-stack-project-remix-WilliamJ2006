@@ -21,7 +21,7 @@ const LoginForm = ({ checkLoggedIn }) => {
       <input id="username-input" name="username" type="text" required />
 
       <label htmlFor="password-input">Password</label>
-      <input id="password-input" name="password" type="text" required />
+      <input id="password-input" name="password" type="password" required />
 
       <button type="submit">Log In</button>
     </form>

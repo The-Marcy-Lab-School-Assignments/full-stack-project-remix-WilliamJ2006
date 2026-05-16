@@ -6,6 +6,7 @@ function DashboardButtons({
   user,
   onUsersClick,
   onSettingsClick,
+  onCoursesClick,
 }) {
   const handleClick = async () => {
     const { error } = await logoutUser();
@@ -18,7 +19,7 @@ function DashboardButtons({
     return (
       <ul className="dashboardButtons">
         <li>
-          <button>
+          <button onClick={onCoursesClick}>
             <span>Courses</span>
           </button>
         </li>
@@ -32,7 +33,7 @@ function DashboardButtons({
         <li>
           <button onClick={onUsersClick}>
             <span>
-              {user.role === 'professor' ? 'Students' : 'Instructors'}
+              {user.role === 'professor' ? 'Students' : 'Professors'}
             </span>
           </button>
         </li>

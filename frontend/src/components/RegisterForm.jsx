@@ -34,7 +34,7 @@ const RegisterForm = ({ checkLoggedIn }) => {
       <input id="email-input" name="email" type="email" required />
 
       <label htmlFor="password-input">Password</label>
-      <input id="password-input" name="password" type="text" required />
+      <input id="password-input" name="password" type="password" required />
 
       <label htmlFor="role-select">Role</label>
       <select id="role-select" name="role" required>

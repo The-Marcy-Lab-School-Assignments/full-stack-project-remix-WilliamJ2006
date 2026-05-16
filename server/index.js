@@ -29,7 +29,22 @@ const {
   deleteUser,
 } = require('./controllers/userControllers');
 
-const { listCourses } = require('./controllers/courseControllers');
+const {
+  listCourses,
+  listStudentCourses,
+  listProfessorCourses,
+  findCourse,
+  createCourse,
+  updateCourse,
+  deleteCourse,
+} = require('./controllers/courseControllers');
+
+const {
+  confirmEnrollment,
+  cancelEnrollment,
+  listConfirmedEnrollments,
+  isFull,
+} = require('./controllers/enrollmentControllers');
 
 const app = express();
 
@@ -53,7 +68,9 @@ app.use(
     maxAge: 24 * 60 * 60 * 1000,
   }),
 );
+
 app.use(express.json());
+
 app.use(express.static(path.join(__dirname, pathToFrontend)));
 
 // ====================================
@@ -61,13 +78,17 @@ app.use(express.static(path.join(__dirname, pathToFrontend)));
 // ====================================
 
 app.post('/api/auth/register', register);
+
 app.post('/api/auth/login', login);
+
 app.get('/api/auth/me', getMe);
+
 app.delete('/api/auth/logout', logout);
 
 // ====================================
 // User routes
 // ====================================
+
 app.get('/api/users', listUsers);
 
 app.post('/api/users/role', listUsersByRole);
@@ -88,6 +109,12 @@ app.patch('/api/users/:user_id', checkAuthentication, updateUser);
 
 app.delete('/api/users/:user_id', checkAuthentication, deleteUser);
 
+app.get(
+  '/api/users/:user_id/enrollments',
+  checkAuthentication,
+  listConfirmedEnrollments,
+);
+
 // ====================================
 // Assignment routes
 // ====================================
@@ -98,13 +125,49 @@ app.delete('/api/users/:user_id', checkAuthentication, deleteUser);
 
 app.get('/api/courses', listCourses);
 
+app.get(
+  '/api/courses/students/:user_id',
+  checkAuthentication,
+  listStudentCourses,
+);
+
+app.get(
+  '/api/courses/professors/:user_id',
+  checkAuthentication,
+  listProfessorCourses,
+);
+
+app.get('/api/courses/:course_id', findCourse);
+
+app.post('/api/courses', checkAuthentication, createCourse);
+
+app.patch('/api/courses/:course_id', checkAuthentication, updateCourse);
+
+app.delete('/api/courses/:course_id', checkAuthentication, deleteCourse);
+
+app.post(
+  '/api/courses/:course_id/enroll',
+  checkAuthentication,
+  isFull,
+  confirmEnrollment,
+);
+
+app.delete(
+  '/api/courses/:course_id/enroll',
+  checkAuthentication,
+  cancelEnrollment,
+);
+
 // ====================================
 // Global Error Handling
 // ====================================
 
 const handleError = (err, req, res, next) => {
   console.error(err);
-  res.status(500).send({ message: 'Internal Server Error' });
+
+  res.status(500).send({
+    message: 'Internal Server Error',
+  });
 };
 
 app.use(handleError);
