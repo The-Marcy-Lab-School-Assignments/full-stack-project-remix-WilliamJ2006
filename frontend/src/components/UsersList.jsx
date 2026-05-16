@@ -14,7 +14,6 @@ function UsersList({ user, onUsersClick }) {
 
   const getUsers = async () => {
     let response;
-
     if (filterRelated) {
       response =
         user.role === 'professor'
@@ -22,16 +21,12 @@ function UsersList({ user, onUsersClick }) {
           : await fetchUsersByCourses(user.user_id);
     } else {
       const role = user.role === 'professor' ? 'student' : 'professor';
-
       response = await fetchUsersByRole(role);
     }
-
     const { data, error } = response;
-
     if (error) {
       return console.error(error);
     }
-
     setUsers(Array.isArray(data) ? data : []);
   };
 
@@ -43,7 +38,7 @@ function UsersList({ user, onUsersClick }) {
     <main className="usersPage">
       <header className="usersHeader">
         <h1 className="usersTitle">
-          {user.role === 'professor' ? 'Students' : 'Instructors'}
+          {user.role === 'professor' ? 'Students' : 'Professors'}
         </h1>
 
         <nav className="usersControls">
@@ -52,18 +47,24 @@ function UsersList({ user, onUsersClick }) {
               ? 'Show All'
               : user.role === 'professor'
                 ? 'My Students'
-                : 'My Instructors'}
+                : 'My Professors'}
           </button>
         </nav>
       </header>
 
-      <section className="usersGrid">
+      <section
+        className="usersGrid"
+        key={users.map((user) => user.user_id).join('-')}
+      >
         {users.length === 0 ? (
-          <h2>No {user.role === 'professor' ? 'students' : 'instructors'}</h2>
+          <h2>
+            No {user.role === 'professor' ? 'students' : 'professors'} found.
+          </h2>
         ) : (
           users.map((user) => (
             <article className="userCard" key={user.user_id}>
               <p className="party">party</p>
+
               <h2 className="userName">{user.username}</h2>
 
               {filterRelated && user.course_name && (

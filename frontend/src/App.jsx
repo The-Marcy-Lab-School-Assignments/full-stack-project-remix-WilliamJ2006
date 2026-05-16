@@ -23,7 +23,6 @@ function App() {
     setLogIn(true);
     setUser(data);
     navigate('/dashboard');
-    console.log(data);
   };
   useEffect(() => {
     checkLoggedIn();
