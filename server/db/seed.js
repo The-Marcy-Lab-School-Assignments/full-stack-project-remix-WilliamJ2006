@@ -25,7 +25,7 @@ const seed = async () => {
     CREATE TABLE courses (
       course_id     SERIAL PRIMARY KEY,
       professor_id  INTEGER NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
-      course_name   TEXT NOT NULL,
+      course_name   TEXT NOT NULL UNIQUE,
       description   TEXT,
       created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       max_capacity  INTEGER NOT NULL
@@ -37,14 +37,15 @@ const seed = async () => {
       enrollment_id   SERIAL PRIMARY KEY,
       student_id      INTEGER NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
       course_id       INTEGER NOT NULL REFERENCES courses(course_id) ON DELETE CASCADE,
-      created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE(student_id, course_id)
     )
   `);
 
   await pool.query(`
     CREATE TABLE assignments (
       assignment_id   SERIAL PRIMARY KEY,
-      name            TEXT NOT NULL,
+      title           TEXT NOT NULL,
       course_id       INTEGER NOT NULL REFERENCES courses(course_id) ON DELETE CASCADE,
       description     TEXT,
       due_date        DATE,
@@ -157,7 +158,7 @@ const seed = async () => {
 
   const assignmentQuery = `
     INSERT INTO assignments (
-      name,
+      title,
       course_id,
       description,
       due_date

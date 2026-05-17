@@ -4,23 +4,20 @@ module.exports.list = async (user_id) => {
   const query = `
     SELECT
       courses.*,
-
+      users.username AS professor_name,
       COUNT(enrollments.student_id) AS enrollment_count,
-
       EXISTS (
         SELECT 1
         FROM enrollments user_enrollments
         WHERE user_enrollments.course_id = courses.course_id
           AND user_enrollments.student_id = $1
       ) AS is_enrolled
-
     FROM courses
-
+    JOIN users
+      ON courses.professor_id = users.user_id
     LEFT JOIN enrollments
       ON courses.course_id = enrollments.course_id
-
-    GROUP BY courses.course_id
-
+    GROUP BY courses.course_id, users.username
     ORDER BY courses.course_id
   `;
 
@@ -34,14 +31,17 @@ module.exports.listByStudent = async (student_id) => {
     `
     SELECT
       courses.*,
-      COUNT(enrollments.student_id) AS enrollment_count
+      users.username AS professor_name,
+      COUNT(all_enrollments.student_id) AS enrollment_count
     FROM enrollments
     JOIN courses
       ON enrollments.course_id = courses.course_id
+    JOIN users
+      ON courses.professor_id = users.user_id
     LEFT JOIN enrollments AS all_enrollments
       ON courses.course_id = all_enrollments.course_id
     WHERE enrollments.student_id = $1
-    GROUP BY courses.course_id
+    GROUP BY courses.course_id, users.username
     ORDER BY courses.course_id
     `,
     [student_id],
@@ -55,12 +55,15 @@ module.exports.listByProfessor = async (professor_id) => {
     `
     SELECT
       courses.*,
+      users.username AS professor_name,
       COUNT(enrollments.student_id) AS enrollment_count
     FROM courses
+    JOIN users
+      ON courses.professor_id = users.user_id
     LEFT JOIN enrollments
       ON courses.course_id = enrollments.course_id
     WHERE courses.professor_id = $1
-    GROUP BY courses.course_id
+    GROUP BY courses.course_id, users.username
     ORDER BY courses.course_id
     `,
     [professor_id],
