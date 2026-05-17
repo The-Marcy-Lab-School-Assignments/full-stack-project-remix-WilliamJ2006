@@ -14,6 +14,19 @@ module.exports.enroll = async (course_id, student_id) => {
 };
 
 module.exports.unenroll = async (course_id, student_id) => {
+  await pool.query(
+    `
+    DELETE FROM assignment_completions
+    WHERE student_id = $1
+      AND assignment_id IN (
+        SELECT assignment_id
+        FROM assignments
+        WHERE course_id = $2
+      )
+    `,
+    [student_id, course_id],
+  );
+
   const query = `
     DELETE FROM enrollments
     WHERE course_id = $1

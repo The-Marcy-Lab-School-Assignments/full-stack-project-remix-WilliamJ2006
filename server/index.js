@@ -46,6 +46,22 @@ const {
   isFull,
 } = require('./controllers/enrollmentControllers');
 
+const {
+  listStudentAssignments,
+  listProfessorAssignments,
+  findAssignment,
+  createAssignment,
+  updateAssignment,
+  deleteAssignment,
+  listAssignmentCompletionStatus,
+} = require('./controllers/assignmentControllers');
+
+const {
+  confirmCompletion,
+  cancelCompletion,
+  listConfirmedCompletions,
+} = require('./controllers/assignmentCompletionsControllers');
+
 const app = express();
 
 const PORT = process.env.PORT || 8080;
@@ -120,6 +136,62 @@ app.get(
 // ====================================
 
 // ====================================
+// Assignment routes
+// ====================================
+
+app.get(
+  '/api/assignments/students/:user_id',
+  checkAuthentication,
+  listStudentAssignments,
+);
+
+app.get(
+  '/api/assignments/professors/:user_id',
+  checkAuthentication,
+  listProfessorAssignments,
+);
+
+app.get('/api/assignments/:assignment_id', checkAuthentication, findAssignment);
+
+app.post('/api/assignments', checkAuthentication, createAssignment);
+
+app.patch(
+  '/api/assignments/:assignment_id',
+  checkAuthentication,
+  updateAssignment,
+);
+
+app.delete(
+  '/api/assignments/:assignment_id',
+  checkAuthentication,
+  deleteAssignment,
+);
+
+app.get(
+  '/api/assignments/:assignment_id/status',
+  checkAuthentication,
+  listAssignmentCompletionStatus,
+);
+
+app.post(
+  '/api/assignments/:assignment_id/complete',
+  checkAuthentication,
+  confirmCompletion,
+);
+
+app.delete(
+  '/api/assignments/:assignment_id/complete',
+  checkAuthentication,
+  cancelCompletion,
+);
+
+app.get(
+  '/api/users/:user_id/completions',
+  checkAuthentication,
+  listConfirmedCompletions,
+);
+
+// ====================================
 // Courses routes
 // ====================================
 
@@ -158,6 +230,11 @@ app.delete(
   cancelEnrollment,
 );
 
+// Fallback
+app.use((req, res) => {
+  res.sendFile(path.join(__dirname, pathToFrontend, 'index.html'));
+});
+
 // ====================================
 // Global Error Handling
 // ====================================
@@ -171,7 +248,6 @@ const handleError = (err, req, res, next) => {
 };
 
 app.use(handleError);
-
 // ====================================
 // Listen
 // ====================================

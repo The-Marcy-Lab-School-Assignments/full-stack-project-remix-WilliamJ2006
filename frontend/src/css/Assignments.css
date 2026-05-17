@@ -1,0 +1,653 @@
+.assignmentsPage {
+  min-height: 100vh;
+
+  padding:
+    2.5rem
+    4rem
+    8rem;
+
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+
+  position: relative;
+
+  background:
+    linear-gradient(
+      180deg,
+      #74f6ff 0%,
+      #29c8ff 18%,
+      #0075ff 42%,
+      #003fc7 70%,
+      #00115a 100%
+    );
+
+  color: white;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.assignmentsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  gap: 2rem;
+
+  margin-bottom: 2.5rem;
+}
+
+.assignmentsTitle {
+  margin: 0;
+
+  font-size: 5.5rem;
+
+  font-style: italic;
+  font-weight: 900;
+
+  text-transform: uppercase;
+
+  letter-spacing: -4px;
+
+  line-height: 0.9;
+
+  opacity: 0.95;
+}
+
+/* =========================
+   CONTROLS
+========================= */
+
+.assignmentsControls {
+  display: flex;
+
+  gap: 0.8rem;
+
+  flex-shrink: 0;
+}
+
+.assignmentsControls button,
+.assignmentForm button,
+.completeButton,
+.uncompleteButton,
+.viewStatusButton,
+.hideStatusButton,
+.editAssignmentButton,
+.deleteAssignmentButton,
+.returnButton {
+  border: none;
+
+  padding:
+    0.85rem
+    1.3rem;
+
+  color: white;
+
+  font-size: 0.9rem;
+  font-weight: 900;
+
+  text-transform: uppercase;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.14s ease,
+    filter 0.14s ease,
+    box-shadow 0.14s ease;
+}
+
+.assignmentsControls button,
+.assignmentForm button,
+.returnButton {
+  background: #005dff;
+}
+
+.assignmentsControls button:hover,
+.assignmentForm button:hover,
+.completeButton:hover,
+.uncompleteButton:hover,
+.viewStatusButton:hover,
+.hideStatusButton:hover,
+.editAssignmentButton:hover,
+.deleteAssignmentButton:hover,
+.returnButton:hover {
+  transform: translateY(-2px);
+
+  filter: brightness(1.1);
+}
+
+/* =========================
+   FORM
+========================= */
+
+.assignmentForm {
+  width: min(100%, 520px);
+
+  align-self: center;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 1rem;
+
+  margin-bottom: 2rem;
+
+  padding:
+    1.8rem
+    2rem;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.96),
+      rgba(8, 8, 8, 0.93)
+    );
+
+  border-left: 8px solid #00e5ff;
+
+  box-shadow:
+    0 0 35px rgba(0, 0, 0, 0.32);
+}
+
+.assignmentForm h2 {
+  margin: 0 0 0.6rem 0;
+
+  font-size: 2rem;
+
+  font-style: italic;
+  font-weight: 900;
+
+  text-transform: uppercase;
+}
+
+.assignmentForm input,
+.assignmentForm select {
+  border: none;
+  outline: none;
+
+  width: 100%;
+
+  height: 72px;
+
+  padding:
+    1rem
+    1.2rem;
+
+  box-sizing: border-box;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.14),
+      rgba(255, 255, 255, 0.05)
+    );
+
+  color: white;
+
+  font-size: 1rem;
+
+  transition:
+    background 0.14s ease,
+    transform 0.14s ease;
+}
+
+.assignmentForm input::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.assignmentForm input:focus,
+.assignmentForm select:focus {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.2),
+      rgba(255, 255, 255, 0.08)
+    );
+
+  transform: translateX(3px);
+}
+
+/* =========================
+   DATE PICKER
+========================= */
+
+.assignmentForm input[type='date']::-webkit-calendar-picker-indicator {
+  filter:
+    invert(1)
+    brightness(2);
+
+  cursor: pointer;
+
+  margin-right: 0.25rem;
+}
+
+/* =========================
+   SELECT
+========================= */
+
+.assignmentForm select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  padding:
+    1rem
+    4rem
+    1rem
+    1.2rem;
+
+  background-color: transparent;
+
+  background-image:
+    linear-gradient(
+      45deg,
+      transparent 50%,
+      white 50%
+    ),
+    linear-gradient(
+      135deg,
+      white 50%,
+      transparent 50%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.14),
+      rgba(255, 255, 255, 0.05)
+    );
+
+  background-position:
+    calc(100% - 30px) calc(50% + 4px),
+    calc(100% - 22px) calc(50% + 4px),
+    0 0;
+
+  background-size:
+    8px 8px,
+    8px 8px,
+    100% 100%;
+
+  background-repeat: no-repeat;
+
+  line-height: 1.2;
+}
+
+.assignmentForm select option {
+  background: #111827;
+
+  color: white;
+}
+
+/* =========================
+   MESSAGE
+========================= */
+
+.assignmentsMessage {
+  min-height: 28px;
+
+  margin-bottom: 1rem;
+
+  text-align: center;
+
+  font-weight: 700;
+
+  font-size: 1.1rem;
+
+  color: #9efcff;
+}
+
+/* =========================
+   GRID
+========================= */
+
+.assignmentsGrid {
+  display: flex;
+  flex-direction: column;
+
+  gap: 1rem;
+
+  width: 100%;
+}
+
+/* =========================
+   CARD
+========================= */
+
+.assignmentCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 2rem;
+
+  width: 100%;
+
+  padding:
+    1.3rem
+    1.6rem;
+
+  box-sizing: border-box;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.96),
+      rgba(12, 12, 12, 0.92)
+    );
+
+  border-left: 8px solid #00e5ff;
+
+  transition:
+    transform 0.14s ease,
+    background 0.14s ease;
+}
+
+.assignmentCard:hover {
+  transform: translateX(6px);
+}
+
+.assignmentInfo {
+  flex: 1;
+}
+
+.assignmentCard h2 {
+  margin: 0 0 0.6rem 0;
+
+  font-size: 2rem;
+
+  font-style: italic;
+  font-weight: 900;
+
+  text-transform: uppercase;
+
+  letter-spacing: -1px;
+
+  color: white;
+}
+
+.assignmentCard p {
+  margin: 0.4rem 0;
+
+  opacity: 0.95;
+
+  font-size: 1.15rem;
+
+  line-height: 1.35;
+}
+
+.assignmentCard strong {
+  color: #ffffff;
+
+  font-weight: 900;
+}
+
+.dueDate {
+  font-size: 1.2rem;
+
+  letter-spacing: 0.3px;
+}
+
+.dueDate strong {
+  font-weight: 900;
+
+  color: #ffffff;
+}
+
+/* =========================
+   META
+========================= */
+
+.assignmentMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 0.45rem;
+
+  min-width: 160px;
+
+  flex-shrink: 0;
+}
+
+.assignmentMeta p {
+  font-size: 1.25rem;
+
+  font-weight: 800;
+
+  white-space: nowrap;
+}
+
+/* =========================
+   ACTIONS
+========================= */
+
+.assignmentActions {
+  display: flex;
+  flex-direction: column;
+
+  gap: 0.55rem;
+
+  min-width: 135px;
+}
+
+.completeButton,
+.uncompleteButton,
+.viewStatusButton,
+.hideStatusButton,
+.editAssignmentButton,
+.deleteAssignmentButton {
+  width: 135px;
+
+  height: 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+}
+
+/* =========================
+   COMPLETE
+========================= */
+
+.completeButton {
+  background:
+    linear-gradient(
+      135deg,
+      #00c853,
+      #009624
+    );
+
+  box-shadow:
+    0 0 18px rgba(0, 255, 120, 0.22);
+}
+
+/* =========================
+   UNCOMPLETE
+========================= */
+
+.uncompleteButton {
+  background:
+    linear-gradient(
+      135deg,
+      #ff9100,
+      #ff6d00
+    );
+
+  box-shadow:
+    0 0 18px rgba(255, 145, 0, 0.24);
+}
+
+/* =========================
+   STATUS
+========================= */
+
+.viewStatusButton {
+  background:
+    linear-gradient(
+      135deg,
+      #00b8ff,
+      #0077ff
+    );
+}
+
+/* =========================
+   HIDE STATUS
+========================= */
+
+.hideStatusButton {
+  background:
+    linear-gradient(
+      135deg,
+      #ff9100,
+      #ff6d00
+    );
+
+  box-shadow:
+    0 0 18px rgba(255, 145, 0, 0.24);
+}
+
+/* =========================
+   EDIT
+========================= */
+
+.editAssignmentButton {
+  background:
+    linear-gradient(
+      135deg,
+      #7c4dff,
+      #512da8
+    );
+}
+
+/* =========================
+   DELETE
+========================= */
+
+.deleteAssignmentButton {
+  background:
+    linear-gradient(
+      135deg,
+      #ff1744,
+      #c4002f
+    );
+
+  box-shadow:
+    0 0 18px rgba(255, 30, 70, 0.2);
+}
+
+/* =========================
+   COMPLETION STATUS
+========================= */
+
+.completionStatus {
+  display: flex;
+  flex-direction: column;
+
+  gap: 0.7rem;
+
+  margin-bottom: 2rem;
+
+  padding:
+    1.4rem
+    1.5rem;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.92),
+      rgba(12, 12, 12, 0.88)
+    );
+
+  border-left: 8px solid #00e5ff;
+}
+
+.completionStatus h2 {
+  margin: 0 0 0.8rem 0;
+
+  font-size: 2rem;
+
+  font-style: italic;
+  font-weight: 900;
+
+  text-transform: uppercase;
+}
+
+.completionCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding:
+    0.9rem
+    1rem;
+
+  background:
+    rgba(255, 255, 255, 0.05);
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.assignmentsFooter {
+  position: fixed;
+
+  left: 3rem;
+  bottom: 2rem;
+
+  z-index: 20;
+}
+
+/* =========================
+   LOAD
+========================= */
+
+.assignmentsHeader,
+.assignmentForm,
+.assignmentsMessage,
+.assignmentCard,
+.completionStatus {
+  opacity: 0;
+
+  animation:
+    fadeIn 0.4s ease forwards;
+}
+
+.assignmentCard:nth-child(1) {
+  animation-delay: 0.08s;
+}
+
+.assignmentCard:nth-child(2) {
+  animation-delay: 0.12s;
+}
+
+.assignmentCard:nth-child(3) {
+  animation-delay: 0.16s;
+}
+
+.assignmentCard:nth-child(4) {
+  animation-delay: 0.2s;
+}
+
+.assignmentCard:nth-child(5) {
+  animation-delay: 0.24s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

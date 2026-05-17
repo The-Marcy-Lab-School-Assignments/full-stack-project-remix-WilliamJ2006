@@ -31,6 +31,7 @@ function Courses({ user, onCoursesClick }) {
     null,
     null,
   ]);
+
   const onEditClick = (
     courseId,
     courseName,
@@ -61,14 +62,19 @@ function Courses({ user, onCoursesClick }) {
 
     if (!values.course_name) values.course_name = null;
     if (!values.description) values.description = null;
+
     if (!values.max_capacity || values.max_capacity < showEdit[5]) {
       values.max_capacity = showEdit[4];
     }
+
     if (values.max_capacity < showEdit[5]) {
       setCurrentMessage(`Course capacity can't be below current enrollments!`);
+
       setShowEdit([false, null, null, null, null, null]);
+
       return;
     }
+
     const { error } = await fetchUpdateCourse(
       Number(showEdit[1]),
       values.course_name,
@@ -77,7 +83,9 @@ function Courses({ user, onCoursesClick }) {
     );
 
     if (error) return console.error(error);
+
     setCurrentMessage('Course updated successfully.');
+
     await loadCourses(viewMode);
 
     setShowEdit([false, null, null, null, null]);
@@ -91,7 +99,7 @@ function Courses({ user, onCoursesClick }) {
     } else if (mode === 'professor') {
       response = await fetchProfessorCourses(user.user_id);
     } else {
-      response = await fetchCourses();
+      response = await fetchCourses(user.user_id);
     }
 
     const { data, error } = response;
@@ -261,7 +269,12 @@ function Courses({ user, onCoursesClick }) {
       <p className="coursesMessage">{currentMessage}</p>
 
       {viewMode !== 'create' && (
-        <section className="coursesGrid">
+        <section
+          className="coursesGrid"
+          key={`${viewMode}-${courses
+            .map((course) => course.course_id)
+            .join('-')}`}
+        >
           {courses.length === 0 ? (
             <h2>No courses found.</h2>
           ) : (
@@ -277,6 +290,10 @@ function Courses({ user, onCoursesClick }) {
                     <h2>{course.course_name}</h2>
 
                     <p>{course.description}</p>
+
+                    <p>
+                      Professor: <strong>{course.professor_name}</strong>
+                    </p>
                   </div>
 
                   <div className="courseMeta">
@@ -330,6 +347,7 @@ function Courses({ user, onCoursesClick }) {
                         >
                           Edit
                         </button>
+
                         <button
                           className="deleteCourseButton"
                           onClick={() => handleDelete(course.course_id)}
