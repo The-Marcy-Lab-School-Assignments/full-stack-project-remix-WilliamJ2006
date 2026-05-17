@@ -38,20 +38,97 @@ nav .navBar {
   gap: 10px;
 }
 
+.navLinks a {
+  position: relative;
+
+  display: inline-block;
+
+  padding:
+    0.35rem
+    0.7rem;
+
+  color: #00c8ff;
+
+  font-size: 1.15rem;
+  font-style: italic;
+  font-weight: 800;
+
+  text-decoration: none;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.5px;
+
+  transition:
+    color 0.14s ease,
+    transform 0.14s ease,
+    text-shadow 0.14s ease;
+}
+
+.navLinks a::after {
+  content: '';
+
+  position: absolute;
+
+  left: 0;
+  bottom: -2px;
+
+  width: 100%;
+  height: 2px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #00c8ff,
+      #005dff
+    );
+
+  transform: scaleX(0);
+
+  transform-origin: left;
+
+  transition:
+    transform 0.16s ease;
+}
+
+.navLinks a:hover {
+  color: #ffffff;
+
+  transform: translateY(-1px);
+
+  text-shadow:
+    0 0 10px rgba(0, 200, 255, 0.45),
+    0 0 20px rgba(0, 93, 255, 0.28);
+}
+
+.navLinks a:hover::after {
+  transform: scaleX(1);
+}
+
 form {
   display: flex;
   flex-direction: column;
+  position: relative;
+  justify-content: space-evenly;
 
   margin: auto;
 
   width: 25vw;
   height: 50vh;
 
-  gap: 15px;
+  gap: 10px;
 
   padding: 25px;
 
   background: #005dff;
+  z-index: 10000;
+  /* From https://css.glass */
+  background: rgba(4, 185, 255, 0);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(3.3px);
+  -webkit-backdrop-filter: blur(3.3px);
+  border: 1px solid rgba(4, 185, 255, 0.77);
 }
 
 /* =============================================
@@ -503,4 +580,153 @@ form {
   -webkit-text-stroke: 0;
 
   text-shadow: none;
+}
+
+.register-form input,
+.register-form select,
+.login-form input,
+.login-form select {
+  border: none;
+  outline: none;
+
+  width: 100%;
+
+  padding:
+    0.55rem
+    0.75rem;
+
+  box-sizing: border-box;
+
+  border-radius: 8px;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.12),
+      rgba(255, 255, 255, 0.05)
+    );
+
+  color: white;
+
+  font-size: 0.9rem;
+  font-weight: 600;
+
+  backdrop-filter: blur(2px);
+
+  transition:
+    background 0.14s ease,
+    transform 0.14s ease,
+    box-shadow 0.14s ease;
+}
+
+.register-form input::placeholder,
+.login-form input::placeholder {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.register-form input:focus,
+.register-form select:focus,
+.login-form input:focus,
+.login-form select:focus {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.18),
+      rgba(255, 255, 255, 0.08)
+    );
+
+  box-shadow:
+    0 0 0 2px rgba(0, 220, 255, 0.12);
+}
+
+/* =========================
+   SELECT
+========================= */
+
+.register-form select,
+.login-form select {
+  appearance: none;
+
+  cursor: pointer;
+
+  padding-right: 2rem;
+
+  background-image:
+    linear-gradient(
+      45deg,
+      transparent 50%,
+      white 50%
+    ),
+    linear-gradient(
+      135deg,
+      white 50%,
+      transparent 50%
+    );
+
+  background-position:
+    calc(100% - 14px) calc(50% - 2px),
+    calc(100% - 9px) calc(50% - 2px);
+
+  background-size:
+    5px 5px,
+    5px 5px;
+
+  background-repeat: no-repeat;
+}
+
+.register-form select option,
+.login-form select option {
+  background: #0f172a;
+
+  color: white;
+}
+
+/* =========================
+   BUTTON
+========================= */
+
+.register-form button,
+.login-form button {
+  border: none;
+
+  width: 100%;
+
+  margin-top: 0.4rem;
+
+  padding:
+    0.65rem
+    0.9rem;
+
+  border-radius: 8px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #00b8ff,
+      #005dff
+    );
+
+  color: white;
+
+  font-size: 0.9rem;
+  font-weight: 900;
+
+  text-transform: uppercase;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.14s ease,
+    filter 0.14s ease,
+    box-shadow 0.14s ease;
+}
+
+.register-form button:hover,
+.login-form button:hover {
+  transform: translateY(-1px);
+
+  filter: brightness(1.08);
+
+  box-shadow:
+    0 4px 14px rgba(0, 120, 255, 0.24);
 }

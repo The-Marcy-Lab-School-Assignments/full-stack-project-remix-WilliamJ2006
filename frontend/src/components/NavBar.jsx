@@ -16,7 +16,7 @@ function NavBar({ page, loggedIn, user }) {
   return (
     <ul className="navBar">
       <li>
-        <h1 className="logo">{page === 'login' ? 'Login' : 'Register'} Page</h1>
+        <h1 className="logo">{page === 'login' ? 'Login' : 'Register'}</h1>
       </li>
       <ul className="navLinks">
         <li>

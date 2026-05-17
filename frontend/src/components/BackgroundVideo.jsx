@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-function BackgroundVideo() {
+function BackgroundVideo({ intro, loop }) {
   const [introFinished, setIntroFinished] = useState(false);
 
   return (
@@ -13,7 +13,7 @@ function BackgroundVideo() {
         preload="auto"
         className="backgroundVideo"
       >
-        <source src="/videos/menu-loop.mp4" type="video/mp4" />
+        <source src={loop} type="video/mp4" />
       </video>
 
       <video
@@ -26,7 +26,7 @@ function BackgroundVideo() {
           introFinished ? 'fadeOut' : ''
         }`}
       >
-        <source src="/videos/menu-intro.mp4" type="video/mp4" />
+        <source src={intro} type="video/mp4" />
       </video>
     </>
   );

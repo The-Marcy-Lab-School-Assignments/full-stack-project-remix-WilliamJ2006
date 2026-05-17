@@ -23,7 +23,7 @@ const LoginForm = ({ checkLoggedIn }) => {
       <label htmlFor="password-input">Password</label>
       <input id="password-input" name="password" type="password" required />
 
-      <button type="submit">Log In</button>
+      <button type="submit">Continue Game</button>
     </form>
   );
 };
