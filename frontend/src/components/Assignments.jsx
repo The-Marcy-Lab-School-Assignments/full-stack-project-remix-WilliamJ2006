@@ -301,7 +301,9 @@ function Assignments({ user, onAssignmentsClick }) {
                   <p className="dueDate">
                     Due:{' '}
                     <strong>
-                      {new Date(assignment.due_date).toLocaleDateString()}
+                      {new Date(
+                        `${assignment.due_date.split('T')[0]}T12:00:00`,
+                      ).toLocaleDateString()}
                     </strong>
                   </p>
                 </div>
