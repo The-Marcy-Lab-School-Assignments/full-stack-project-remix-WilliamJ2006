@@ -46,7 +46,7 @@ const RegisterForm = ({ checkLoggedIn }) => {
         ))}
       </select>
 
-      <button type="submit">Register Account</button>
+      <button type="submit">New Game</button>
     </form>
   );
 };

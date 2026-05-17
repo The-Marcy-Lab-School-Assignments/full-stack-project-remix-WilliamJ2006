@@ -37,7 +37,10 @@ function DashboardPage({ loggedIn, checkLoggedIn, user }) {
   }
   return (
     <main>
-      <BackgroundVideo />
+      <BackgroundVideo
+        intro="/videos/menu-intro.mp4"
+        loop="/videos/menu-loop.mp4"
+      />
       <nav>
         <NavBar page="dashboard" loggedIn={loggedIn} user={user} />
       </nav>
