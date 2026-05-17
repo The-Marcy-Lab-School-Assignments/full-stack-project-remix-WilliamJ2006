@@ -260,13 +260,17 @@ function Assignments({ user, onAssignmentsClick }) {
         <section className="completionStatus">
           <h2>Completion Status</h2>
 
-          {completionStatus.map((student) => (
-            <article key={student.user_id} className="completionCard">
-              <p>{student.username}</p>
+          {completionStatus.length === 0 ? (
+            <p>No Submissions</p>
+          ) : (
+            completionStatus.map((student) => (
+              <article key={student.user_id} className="completionCard">
+                <p>{student.username}</p>
 
-              <p>{student.completed ? 'Completed' : 'Missing'}</p>
-            </article>
-          ))}
+                <p>{student.completed ? 'Completed' : 'Missing'}</p>
+              </article>
+            ))
+          )}
         </section>
       )}
 
