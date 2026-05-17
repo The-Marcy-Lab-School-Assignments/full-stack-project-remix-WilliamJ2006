@@ -730,3 +730,20 @@ form {
   box-shadow:
     0 4px 14px rgba(0, 120, 255, 0.24);
 }
+
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+    background: black;
+  }
+
+  to {
+    opacity: 1;
+    background: transparent;
+  }
+}
+
+.loginPage,
+.registerPage {
+  animation: pageFadeIn 0.8s ease;
+}

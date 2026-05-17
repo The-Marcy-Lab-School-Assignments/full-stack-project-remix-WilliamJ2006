@@ -5,7 +5,7 @@ import BackgroundVideo from '../components/BackgroundVideo';
 
 const RegisterPage = ({ loggedIn, checkLoggedIn }) => {
   return (
-    <main>
+    <main className="registerPage">
       <BackgroundVideo
         intro="/videos/home-intro.mp4"
         loop="/videos/home-loop.mp4"

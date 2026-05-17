@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 function LoginPage({ loggedIn, checkLoggedIn }) {
   return (
-    <main>
+    <main className="loginPage">
       <BackgroundVideo
         intro="/videos/home-intro.mp4"
         loop="/videos/home-loop.mp4"
