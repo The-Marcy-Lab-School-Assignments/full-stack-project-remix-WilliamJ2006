@@ -747,3 +747,18 @@ form {
 .registerPage {
   animation: pageFadeIn 0.8s ease;
 }
+
+.message {
+  position:relative;
+  z-index: 10000;
+
+  margin-bottom: 1rem;
+
+  text-align: center;
+
+  font-weight: 700;
+
+  font-size: 1.1rem;
+
+  color: #9efcff;
+}
