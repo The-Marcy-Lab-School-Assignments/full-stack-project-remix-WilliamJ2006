@@ -1,8 +1,10 @@
 import { createUser } from '../adapters/auth-adapters';
+import { useState } from 'react';
 
 const ROLES = ['student', 'professor'];
 
 const RegisterForm = ({ checkLoggedIn }) => {
+  const [message, setMessage] = useState('');
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
@@ -18,36 +20,40 @@ const RegisterForm = ({ checkLoggedIn }) => {
       values.role,
       values.password,
     );
+    setMessage(data.message);
     if (error) return console.error(error);
     await checkLoggedIn();
     form.reset();
   };
 
   return (
-    <form onSubmit={handleSubmit} className="register-form">
-      <h2>Register your account</h2>
+    <>
+      <p className="message">{message}</p>
+      <form onSubmit={handleSubmit} className="register-form">
+        <h2>Register your account</h2>
 
-      <label htmlFor="username-input">Username</label>
-      <input id="username-input" name="username" type="text" required />
+        <label htmlFor="username-input">Username</label>
+        <input id="username-input" name="username" type="text" required />
 
-      <label htmlFor="email-input">Email</label>
-      <input id="email-input" name="email" type="email" required />
+        <label htmlFor="email-input">Email</label>
+        <input id="email-input" name="email" type="email" required />
 
-      <label htmlFor="password-input">Password</label>
-      <input id="password-input" name="password" type="password" required />
+        <label htmlFor="password-input">Password</label>
+        <input id="password-input" name="password" type="password" required />
 
-      <label htmlFor="role-select">Role</label>
-      <select id="role-select" name="role" required>
-        <option value="">-- select --</option>
-        {ROLES.map((role) => (
-          <option key={role} value={role}>
-            {role}
-          </option>
-        ))}
-      </select>
+        <label htmlFor="role-select">Role</label>
+        <select id="role-select" name="role" required>
+          <option value="">-- select --</option>
+          {ROLES.map((role) => (
+            <option key={role} value={role}>
+              {role}
+            </option>
+          ))}
+        </select>
 
-      <button type="submit">New Game</button>
-    </form>
+        <button type="submit">New Game</button>
+      </form>
+    </>
   );
 };
 

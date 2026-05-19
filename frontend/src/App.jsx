@@ -1,4 +1,4 @@
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import './css/App.css';
 import { useState, useEffect } from 'react';
 
@@ -12,11 +12,13 @@ function App() {
   const [loggedIn, setLogIn] = useState(false);
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
   const checkLoggedIn = async () => {
     const { data, error } = await authUser();
     if (error) {
       setLogIn(false);
       setUser(null);
+      if (location.pathname === '/register') return navigate('/register');
       navigate('/');
       return;
     }
