@@ -1,530 +1,284 @@
-# Persona 3 Reload Inspired Assignment Tracker
-
-## Project Contract
-
-### Project Name
-
-Persona 3 Reload Inspired Assignment Tracker
-
----
-
-# Project Overview
-
-This project is a full stack web application inspired by the visual style and menu atmosphere of Persona 3 Reload.
-
-The application is an assignment tracking platform that supports both students and professors.
-
-Students can:
-
-- View enrolled courses
-- Track assignments
-- Mark assignments as completed
-- View assignment due dates
-- Navigate a Persona-inspired dashboard UI
-
-Professors can:
-
-- Create courses
-- Create assignments
-- Manage assignments for courses they own
-- View enrolled students
-- View assignment completion data
-
-The frontend is built using React with Vite.
-The backend is built using Express and PostgreSQL.
-Authentication uses cookie-session based login sessions.
-
----
-
-# Core Features
-
-## Authentication
-
-### Register
-
-Users can:
-
-- Create an account
-- Select either:
-  - student
-  - professor
-
-Required fields:
-
-- username
-- email
-- password
-- role
-
-Passwords are hashed using bcrypt.
-
----
-
-## Login
-
-Users can:
-
-- Log into existing accounts
-- Receive a persistent session cookie
-
-Authenticated users are redirected to the dashboard.
-
----
-
-## Logout
-
-Users can:
-
-- Destroy active sessions
-- Return to login page
-
----
-
-# Student Features
-
-Students can:
-
-- View enrolled courses
-- View assignments by course
-- Mark assignments completed
-- View assignment due dates
-- Access dashboard navigation
-
----
-
-# Professor Features
-
-Professors can:
-
-- Create courses
-- Create assignments
-- Edit assignments
-- Delete assignments
-- View course enrollments
-- View assignment completion statistics
-
----
-
-# Dashboard Features
-
-## Animated Background
-
-The dashboard uses:
-
-- an intro menu animation video
-- a looping Persona-inspired menu background video
-
-The intro animation plays once.
-The looping background continues afterward.
-
----
-
-## Persona Inspired UI
-
-Planned UI features:
-
-- dark blue/black color palette
-- glowing hover effects
-- futuristic typography
-- animated dashboard menu
-- game-style transitions
-- scaling menu buttons
-- translucent UI panels
-
----
-
-# Database Schema
-
-## users
-
-Stores all users.
-
-Columns:
-
-- user_id
-- username
-- email
-- password_hash
-- role
-- created_at
-
-Roles:
-
-- student
-- professor
-
----
-
-## courses
-
-Stores courses created by professors.
-
-Columns:
-
-- course_id
-- professor_id
-- course_name
-- description
-- created_at
-
----
-
-## enrollments
-
-Links students to courses.
-
-Columns:
-
-- enrollment_id
-- student_id
-- course_id
-- created_at
-
----
-
-## assignments
-
-Stores assignments for courses.
-
-Columns:
-
-- assignment_id
-- name
-- course_id
-- description
-- due_date
-- created_at
-
----
-
-## assignment_completions
-
-Tracks completed assignments.
-
-Columns:
-
-- completion_id
-- assignment_id
-- student_id
-- completed_at
-
-A missing row means the assignment is incomplete.
-
----
-
-# Backend Architecture
-
-## Tech Stack
-
-- Node.js
-- Express
-- PostgreSQL
-- bcrypt
-- cookie-session
-
----
-
-# API Contract
-
-## Auth Endpoints
-
-| Method | Endpoint             | Request Body                          | Response                                       |
-| ------ | -------------------- | ------------------------------------- | ---------------------------------------------- |
-| POST   | `/api/auth/register` | `{ username, email, password, role }` | `{ user_id, username, email, role }`           |
-| POST   | `/api/auth/login`    | `{ username, password }`              | `{ user_id, username, email, role }`           |
-| GET    | `/api/auth/me`       | —                                     | `{ user_id, username, email, role }` or `null` |
-| DELETE | `/api/auth/logout`   | —                                     | `{ message }`                                  |
-
----
-
-## User Endpoints
-
-| Method | Endpoint                               | Request Body            | Response                                         |
-| ------ | -------------------------------------- | ----------------------- | ------------------------------------------------ |
-| GET    | `/api/users`                           | —                       | `[{ user_id, username, email, role }]`           |
-| GET    | `/api/users/:user_id/teaching-courses` | —                       | `[{ course_id, course_name, description }]`      |
-| GET    | `/api/users/:user_id/enrollments`      | —                       | `[{ course_id, course_name, description }]`      |
-| GET    | `/api/users/:user_id/assignments`      | —                       | `[{ assignment_id, name, course_id, due_date }]` |
-| PATCH  | `/api/users/:user_id`                  | `{ email?, password? }` | `{ user_id, username, email, role }`             |
-| DELETE | `/api/users/:user_id`                  | —                       | `{ message }`                                    |
-
-All user endpoints require authentication.
-
----
-
-## Course Endpoints
-
-| Method | Endpoint                              | Request Body                     | Response                                                  |
-| ------ | ------------------------------------- | -------------------------------- | --------------------------------------------------------- |
-| GET    | `/api/courses`                        | —                                | `[{ course_id, course_name, description, professor_id }]` |
-| POST   | `/api/courses`                        | `{ course_name, description }`   | `{ course_id, course_name, description, professor_id }`   |
-| GET    | `/api/courses/:course_id`             | —                                | `{ course_id, course_name, description, professor_id }`   |
-| GET    | `/api/courses/:course_id/assignments` | —                                | `[{ assignment_id, name, due_date }]`                     |
-| PATCH  | `/api/courses/:course_id`             | `{ course_name?, description? }` | `{ course_id, course_name, description, professor_id }`   |
-| DELETE | `/api/courses/:course_id`             | —                                | `{ message }`                                             |
-
-Professor-only endpoints:
-
-- POST `/api/courses`
-- PATCH `/api/courses/:course_id`
-- DELETE `/api/courses/:course_id`
-
-All course endpoints require authentication.
-
----
-
-## Assignment Endpoints
-
-| Method | Endpoint                          | Request Body                                 | Response                                         |
-| ------ | --------------------------------- | -------------------------------------------- | ------------------------------------------------ |
-| GET    | `/api/assignments`                | —                                            | `[{ assignment_id, name, course_id, due_date }]` |
-| POST   | `/api/assignments`                | `{ name, course_id, description, due_date }` | `{ assignment_id, name, course_id, due_date }`   |
-| PATCH  | `/api/assignments/:assignment_id` | `{ name?, description?, due_date? }`         | `{ assignment_id, name, course_id, due_date }`   |
-| DELETE | `/api/assignments/:assignment_id` | —                                            | `{ message }`                                    |
-
-Professor-only endpoints:
-
-- POST `/api/assignments`
-- PATCH `/api/assignments/:assignment_id`
-- DELETE `/api/assignments/:assignment_id`
-
-All assignment endpoints require authentication.
-
----
-
-# Frontend Architecture
-
-## Tech Stack
-
-- React
-- React Router
-- Vite
-
----
-
-# Frontend Structure
+# Persona Assignment Tracker - Full-Stack Case Study
+
+A full-stack assignment tracking app built with React, Express, and Postgres. Demonstrates session-based authentication, role-based student/professor workflows, course enrollment, assignment management, completion tracking, and a Persona 3 Reload-inspired dashboard UI with animated video backgrounds.
+
+## User Stories
+
+**Auth**
+- A user can register for an account with a username, email, password, and role
+- A user can choose either a student or professor role when registering
+- A user can log in to an existing account
+- A user can log out
+- A returning user with an active session is automatically rehydrated when they revisit the app
+- A logged-in user can update their email or password
+- A logged-in user can delete their own account
+
+**Students**
+- A student can view all available courses
+- A student can enroll in a course that has available capacity
+- A student can unenroll from a course
+- A student can view their enrolled courses
+- A student can view assignments from courses they are enrolled in
+- A student can mark an assignment as complete
+- A student can mark a completed assignment as incomplete
+- A student can view professors connected to their courses
+
+**Professors**
+- A professor can create a course with a name, description, and max capacity
+- A professor can view courses they own
+- A professor can edit their own courses
+- A professor can delete their own courses
+- A professor can create assignments for their own courses
+- A professor can edit assignments for their own courses
+- A professor can delete assignments for their own courses
+- A professor can view students enrolled in their courses
+- A professor can view completion status for an assignment
+
+**Dashboard**
+- A logged-in user can navigate between courses, assignments, users, and account settings
+- The dashboard uses Persona-inspired menu styling and animated background videos
+- The UI conditionally renders student or professor actions based on the logged-in user's role
+
+## Schema
 
 ```txt
-src/
-│
-├── components/
-│   ├── NavBar.jsx
-│   ├── BackgroundVideo.jsx
-│   ├── LoginForm.jsx
-│   ├── RegisterForm.jsx
-│   └── DashboardMenu.jsx
-│
-├── pages/
-│   ├── Login.jsx
-│   ├── Register.jsx
-│   └── Dashboard.jsx
-│
-├── fetch-helpers.js
-├── App.jsx
-└── main.jsx
+users
+─────────────────────────────
+user_id       SERIAL PRIMARY KEY
+username      TEXT UNIQUE NOT NULL
+email         TEXT UNIQUE NOT NULL
+password_hash TEXT NOT NULL
+role          TEXT NOT NULL CHECK (role IN ('student', 'professor'))
+created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+courses
+─────────────────────────────
+course_id     SERIAL PRIMARY KEY
+professor_id  INTEGER NOT NULL REFERENCES users(user_id) ON DELETE CASCADE
+course_name   TEXT UNIQUE NOT NULL
+description   TEXT
+created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+max_capacity  INTEGER NOT NULL
+
+enrollments
+─────────────────────────────
+enrollment_id SERIAL PRIMARY KEY
+student_id    INTEGER NOT NULL REFERENCES users(user_id) ON DELETE CASCADE
+course_id     INTEGER NOT NULL REFERENCES courses(course_id) ON DELETE CASCADE
+created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+UNIQUE(student_id, course_id)
+
+assignments
+─────────────────────────────
+assignment_id SERIAL PRIMARY KEY
+title         TEXT NOT NULL
+course_id     INTEGER NOT NULL REFERENCES courses(course_id) ON DELETE CASCADE
+description   TEXT
+due_date      DATE
+created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+assignment_completions
+─────────────────────────────
+completion_id SERIAL PRIMARY KEY
+assignment_id INTEGER NOT NULL REFERENCES assignments(assignment_id) ON DELETE CASCADE
+student_id    INTEGER NOT NULL REFERENCES users(user_id) ON DELETE CASCADE
+completed_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+UNIQUE(assignment_id, student_id)
 ```
 
----
+A professor has many courses. A course has many enrollments and assignments. A student has many enrollments and assignment completions. Deleting a user cascades through their related courses, enrollments, and completions. Deleting a course cascades to its assignments and enrollments.
 
-# Routing
+## API Contract
 
-## Routes
+### Auth endpoints
 
-### /
+| Method | Endpoint             | Request Body                         | Response                              |
+| ------ | -------------------- | ------------------------------------ | ------------------------------------- |
+| POST   | `/api/auth/register` | `{ username, email, password, role }` | `{ user_id, username, email, role }` |
+| POST   | `/api/auth/login`    | `{ username, password }`             | `{ user_id, username, email, role }` |
+| GET    | `/api/auth/me`       | -                                    | `{ user_id, username, email, role }` or `null` |
+| DELETE | `/api/auth/logout`   | -                                    | `{ message }`                         |
 
-Login page.
+### User endpoints
 
-### /register
+| Method | Endpoint                      | Request Body     | Response |
+| ------ | ----------------------------- | ---------------- | -------- |
+| GET    | `/api/users`                  | -                | `[{ user_id, username, email, role }]` |
+| POST   | `/api/users/role`             | `{ role }`       | `[{ user_id, username, email, role }]` |
+| GET    | `/api/users/:user_id/students` | -               | Students enrolled in a professor's courses |
+| GET    | `/api/users/:user_id/professors` | -             | Professors connected to a student's enrolled courses |
+| PATCH  | `/api/users/:user_id`         | `{ password, email }` | `{ user_id, username, email, role }` |
+| DELETE | `/api/users/:user_id`         | -                | `{ user_id, username, email, role }` |
 
-Registration page.
+### Course endpoints
 
-### /dashboard
+| Method | Endpoint                         | Request Body                                  | Response |
+| ------ | -------------------------------- | --------------------------------------------- | -------- |
+| GET    | `/api/courses`                   | -                                             | All courses with professor name, enrollment count, and enrollment status |
+| GET    | `/api/courses/students/:user_id` | -                                             | Courses for the logged-in student |
+| GET    | `/api/courses/professors/:user_id` | -                                           | Courses owned by the logged-in professor |
+| GET    | `/api/courses/:course_id`        | -                                             | One course |
+| POST   | `/api/courses`                   | `{ course_name, description, max_capacity }`  | Created course |
+| PATCH  | `/api/courses/:course_id`        | `{ course_name, description, max_capacity }`  | Updated course |
+| DELETE | `/api/courses/:course_id`        | -                                             | Deleted course |
+| POST   | `/api/courses/:course_id/enroll` | -                                             | `true` |
+| DELETE | `/api/courses/:course_id/enroll` | -                                             | `204 No Content` |
 
-Authenticated dashboard.
+### Assignment endpoints
 
----
+| Method | Endpoint                              | Request Body                                  | Response |
+| ------ | ------------------------------------- | --------------------------------------------- | -------- |
+| GET    | `/api/assignments/students/:user_id`  | -                                             | Assignments for the logged-in student's enrolled courses |
+| GET    | `/api/assignments/professors/:user_id` | -                                            | Assignments for the logged-in professor's courses |
+| GET    | `/api/assignments/:assignment_id`     | -                                             | One assignment |
+| POST   | `/api/assignments`                    | `{ title, description, due_date, course_id }` | Created assignment |
+| PATCH  | `/api/assignments/:assignment_id`     | `{ title, description, due_date }`            | Updated assignment |
+| DELETE | `/api/assignments/:assignment_id`     | -                                             | Deleted assignment |
+| GET    | `/api/assignments/:assignment_id/status` | -                                          | `[{ user_id, username, completed }]` |
+| POST   | `/api/assignments/:assignment_id/complete` | -                                       | `true` |
+| DELETE | `/api/assignments/:assignment_id/complete` | -                                      | `204 No Content` |
 
-# Authentication Flow
+### Student progress endpoints
 
-1. User registers or logs in
-2. Backend creates session cookie
-3. Frontend calls:
+| Method | Endpoint                    | Request Body | Response |
+| ------ | --------------------------- | ------------ | -------- |
+| GET    | `/api/users/:user_id/enrollments` | -      | Courses the logged-in student is enrolled in |
+| GET    | `/api/users/:user_id/completions` | -       | Assignments the logged-in student has completed |
 
-```txt
-GET /api/auth/me
+## Setup
+
+### 1. Database
+
+Create a local Postgres database:
+
+```sh
+createdb assignment_tracker_db
 ```
 
-4. User state is stored globally in App.jsx
-5. Dashboard renders based on role
+### 2. Server
 
----
-
-# Planned Dashboard Navigation
-
-Dashboard menu options may include:
-
-- Courses
-- Assignments
-- Stats
-- Settings
-- Calendar
-
-Hover effects:
-
-- scale transforms
-- glow effects
-- box shadows
-
----
-
-# Styling Direction
-
-## Fonts
-
-Recommended fonts:
-
-- Orbitron
-- Inter
-- Rajdhani
-
----
-
-## UI Style
-
-The project aims to create:
-
-- cinematic atmosphere
-- animated game UI feel
-- layered menu system
-- fullscreen video backgrounds
-
----
-
-# Future Improvements
-
-Potential future features:
-
-- assignment statistics
-- grade tracking
-- notifications
-- animated transitions
-- role-based dashboards
-- calendar system
-- assignment filtering
-- mobile responsiveness
-
----
-
-# Development Notes
-
-## Session Authentication
-
-Authentication uses:
-
-- cookie-session
-- bcrypt password hashing
-- session persistence with credentials: include
-
----
-
-## Role Authorization
-
-Frontend role checks control UI visibility.
-Backend role checks control actual permissions.
-
-Example:
-
-- professors can create assignments
-- students cannot create assignments
-
----
-
-# README
-
-## Installation
-
-### Backend
-
-```bash
+```sh
 cd server
 npm install
+cp .env.template .env
 ```
 
-Create a .env file:
+Open `.env` and fill in your Postgres credentials and session secret:
 
-```env
-PORT=8080
-SESSION_SECRET=your_secret_here
-PGHOST=localhost
+```txt
+SESSION_SECRET="your-session-secret"
+PGHOST='127.0.0.1'
 PGPORT=5432
-PGDATABASE=assignment_tracker_db
-PGUSER=postgres
-PGPASSWORD=your_password
+PGDATABASE='assignment_tracker_db'
+PGUSER='your-postgres-user'
+PGPASSWORD='your-postgres-password'
 ```
 
-Run database seed:
+Seed the database:
 
-```bash
+```sh
 node db/seed.js
 ```
 
-Start backend:
+Start the server:
 
-```bash
-npm run dev
+```sh
+node index.js
 ```
 
----
+The server runs on `http://localhost:8080`.
 
-### Frontend
+### 3. Frontend
 
-```bash
+In a second terminal:
+
+```sh
 cd frontend
 npm install
-```
-
-Install React Router:
-
-```bash
-npm install react-router-dom
-```
-
-Start frontend:
-
-```bash
 npm run dev
 ```
 
----
+The frontend runs on `http://localhost:5173`. The Vite dev proxy forwards all `/api` requests to the Express server so session cookies work correctly.
 
-# Current Progress
+## Seed Users
 
-Implemented:
+After running `node db/seed.js`, these accounts are available:
 
-- authentication
-- sessions
-- login/register pages
-- React Router setup
-- navbar navigation
-- dashboard page
-- video background system
-- PostgreSQL schema
-- user model
-- auth controllers
+| Username | Email | Role | Password |
+| -------- | ----- | ---- | -------- |
+| mitsuru | mitsuru@gekkan.edu | professor | kirijo123 |
+| yukari | yukari@gekkan.edu | student | archer456 |
+| junpei | junpei@gekkan.edu | student | ace789 |
+| aigis | aigis@gekkan.edu | student | toaster999 |
+| akihiko | akihiko@gekkan.edu | professor | boxing321 |
 
-In Progress:
+## Seed Data
 
-- dashboard UI
-- Persona menu styling
-- course endpoints
-- assignment endpoints
-- role-based rendering
+The seed file creates two courses:
 
-Planned:
+| Course | Professor | Max Capacity |
+| ------ | --------- | ------------ |
+| Shadow Tactics | mitsuru | 30 |
+| Persona Combat Training | akihiko | 20 |
 
-- calendar transition animation
-- assignment management
-- professor tools
-- dashboard widgets
+It also creates sample enrollments, assignments, and assignment completion records so both student and professor dashboards have data immediately after seeding.
 
----
+## Application Structure
+
+```txt
+full-stack-project-remix-WilliamJ2006/
+├── frontend/                         # React app (Vite)
+│   ├── public/
+│   │   └── videos/                   # Persona-inspired intro and loop background videos
+│   ├── src/
+│   │   ├── App.jsx                   # Routes, current user state, session rehydration
+│   │   ├── main.jsx                  # React entry point
+│   │   ├── pages/
+│   │   │   ├── Login.jsx             # Login page
+│   │   │   ├── Register.jsx          # Register page
+│   │   │   └── Dashboard.jsx         # Dashboard view router
+│   │   ├── adapters/
+│   │   │   ├── auth-adapters.js
+│   │   │   ├── user-adapters.js
+│   │   │   ├── course-adapters.js
+│   │   │   ├── enrollment-adapters.js
+│   │   │   ├── assignment-adapters.js
+│   │   │   └── assignment-completion-adapters.js
+│   │   ├── components/
+│   │   │   ├── LoginForm.jsx
+│   │   │   ├── RegisterForm.jsx
+│   │   │   ├── NavBar.jsx
+│   │   │   ├── BackgroundVideo.jsx
+│   │   │   ├── DashboardButtons.jsx
+│   │   │   ├── Courses.jsx
+│   │   │   ├── CreateCourse.jsx
+│   │   │   ├── EditCourseForm.jsx
+│   │   │   ├── Assignments.jsx
+│   │   │   ├── CreateAssignment.jsx
+│   │   │   ├── EditAssignmentForm.jsx
+│   │   │   ├── UsersList.jsx
+│   │   │   └── AccountSettings.jsx
+│   │   └── css/                      # Page and component styles
+│   └── vite.config.js                # Proxies /api requests to Express in development
+└── server/                           # Express + Postgres API
+    ├── index.js                      # App entry point, middleware, route definitions
+    ├── controllers/
+    │   ├── authControllers.js
+    │   ├── userControllers.js
+    │   ├── courseControllers.js
+    │   ├── enrollmentControllers.js
+    │   ├── assignmentControllers.js
+    │   └── assignmentCompletionsControllers.js
+    ├── models/
+    │   ├── userModel.js
+    │   ├── courseModel.js
+    │   ├── enrollmentModel.js
+    │   ├── assignmentModel.js
+    │   └── assignmentCompletionsModel.js
+    ├── middleware/
+    │   ├── checkAuthentication.js    # Blocks unauthenticated protected requests
+    │   └── logRoutes.js              # Logs each incoming request
+    └── db/
+        ├── pool.js                   # Postgres connection pool
+        └── seed.js                   # Creates tables and inserts sample data
+```
