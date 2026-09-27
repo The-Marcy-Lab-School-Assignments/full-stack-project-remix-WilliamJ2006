@@ -1,10 +1,11 @@
-# Persona Assignment Tracker - Full-Stack Case Study
+# Persona Assignment Tracker - Full-Stack
 
 A full-stack assignment tracking app built with React, Express, and Postgres. Demonstrates session-based authentication, role-based student/professor workflows, course enrollment, assignment management, completion tracking, and a Persona 3 Reload-inspired dashboard UI with animated video backgrounds.
 
 ## User Stories
 
 **Auth**
+
 - A user can register for an account with a username, email, password, and role
 - A user can choose either a student or professor role when registering
 - A user can log in to an existing account
@@ -14,6 +15,7 @@ A full-stack assignment tracking app built with React, Express, and Postgres. De
 - A logged-in user can delete their own account
 
 **Students**
+
 - A student can view all available courses
 - A student can enroll in a course that has available capacity
 - A student can unenroll from a course
@@ -24,6 +26,7 @@ A full-stack assignment tracking app built with React, Express, and Postgres. De
 - A student can view professors connected to their courses
 
 **Professors**
+
 - A professor can create a course with a name, description, and max capacity
 - A professor can view courses they own
 - A professor can edit their own courses
@@ -35,6 +38,7 @@ A full-stack assignment tracking app built with React, Express, and Postgres. De
 - A professor can view completion status for an assignment
 
 **Dashboard**
+
 - A logged-in user can navigate between courses, assignments, users, and account settings
 - The dashboard uses Persona-inspired menu styling and animated background videos
 - The UI conditionally renders student or professor actions based on the logged-in user's role
@@ -92,58 +96,58 @@ A professor has many courses. A course has many enrollments and assignments. A s
 
 ### Auth endpoints
 
-| Method | Endpoint             | Request Body                         | Response                              |
-| ------ | -------------------- | ------------------------------------ | ------------------------------------- |
-| POST   | `/api/auth/register` | `{ username, email, password, role }` | `{ user_id, username, email, role }` |
-| POST   | `/api/auth/login`    | `{ username, password }`             | `{ user_id, username, email, role }` |
-| GET    | `/api/auth/me`       | -                                    | `{ user_id, username, email, role }` or `null` |
-| DELETE | `/api/auth/logout`   | -                                    | `{ message }`                         |
+| Method | Endpoint             | Request Body                          | Response                                       |
+| ------ | -------------------- | ------------------------------------- | ---------------------------------------------- |
+| POST   | `/api/auth/register` | `{ username, email, password, role }` | `{ user_id, username, email, role }`           |
+| POST   | `/api/auth/login`    | `{ username, password }`              | `{ user_id, username, email, role }`           |
+| GET    | `/api/auth/me`       | -                                     | `{ user_id, username, email, role }` or `null` |
+| DELETE | `/api/auth/logout`   | -                                     | `{ message }`                                  |
 
 ### User endpoints
 
-| Method | Endpoint                      | Request Body     | Response |
-| ------ | ----------------------------- | ---------------- | -------- |
-| GET    | `/api/users`                  | -                | `[{ user_id, username, email, role }]` |
-| POST   | `/api/users/role`             | `{ role }`       | `[{ user_id, username, email, role }]` |
-| GET    | `/api/users/:user_id/students` | -               | Students enrolled in a professor's courses |
-| GET    | `/api/users/:user_id/professors` | -             | Professors connected to a student's enrolled courses |
-| PATCH  | `/api/users/:user_id`         | `{ password, email }` | `{ user_id, username, email, role }` |
-| DELETE | `/api/users/:user_id`         | -                | `{ user_id, username, email, role }` |
+| Method | Endpoint                         | Request Body          | Response                                             |
+| ------ | -------------------------------- | --------------------- | ---------------------------------------------------- |
+| GET    | `/api/users`                     | -                     | `[{ user_id, username, email, role }]`               |
+| POST   | `/api/users/role`                | `{ role }`            | `[{ user_id, username, email, role }]`               |
+| GET    | `/api/users/:user_id/students`   | -                     | Students enrolled in a professor's courses           |
+| GET    | `/api/users/:user_id/professors` | -                     | Professors connected to a student's enrolled courses |
+| PATCH  | `/api/users/:user_id`            | `{ password, email }` | `{ user_id, username, email, role }`                 |
+| DELETE | `/api/users/:user_id`            | -                     | `{ user_id, username, email, role }`                 |
 
 ### Course endpoints
 
-| Method | Endpoint                         | Request Body                                  | Response |
-| ------ | -------------------------------- | --------------------------------------------- | -------- |
-| GET    | `/api/courses`                   | -                                             | All courses with professor name, enrollment count, and enrollment status |
-| GET    | `/api/courses/students/:user_id` | -                                             | Courses for the logged-in student |
-| GET    | `/api/courses/professors/:user_id` | -                                           | Courses owned by the logged-in professor |
-| GET    | `/api/courses/:course_id`        | -                                             | One course |
-| POST   | `/api/courses`                   | `{ course_name, description, max_capacity }`  | Created course |
-| PATCH  | `/api/courses/:course_id`        | `{ course_name, description, max_capacity }`  | Updated course |
-| DELETE | `/api/courses/:course_id`        | -                                             | Deleted course |
-| POST   | `/api/courses/:course_id/enroll` | -                                             | `true` |
-| DELETE | `/api/courses/:course_id/enroll` | -                                             | `204 No Content` |
+| Method | Endpoint                           | Request Body                                 | Response                                                                 |
+| ------ | ---------------------------------- | -------------------------------------------- | ------------------------------------------------------------------------ |
+| GET    | `/api/courses`                     | -                                            | All courses with professor name, enrollment count, and enrollment status |
+| GET    | `/api/courses/students/:user_id`   | -                                            | Courses for the logged-in student                                        |
+| GET    | `/api/courses/professors/:user_id` | -                                            | Courses owned by the logged-in professor                                 |
+| GET    | `/api/courses/:course_id`          | -                                            | One course                                                               |
+| POST   | `/api/courses`                     | `{ course_name, description, max_capacity }` | Created course                                                           |
+| PATCH  | `/api/courses/:course_id`          | `{ course_name, description, max_capacity }` | Updated course                                                           |
+| DELETE | `/api/courses/:course_id`          | -                                            | Deleted course                                                           |
+| POST   | `/api/courses/:course_id/enroll`   | -                                            | `true`                                                                   |
+| DELETE | `/api/courses/:course_id/enroll`   | -                                            | `204 No Content`                                                         |
 
 ### Assignment endpoints
 
-| Method | Endpoint                              | Request Body                                  | Response |
-| ------ | ------------------------------------- | --------------------------------------------- | -------- |
-| GET    | `/api/assignments/students/:user_id`  | -                                             | Assignments for the logged-in student's enrolled courses |
-| GET    | `/api/assignments/professors/:user_id` | -                                            | Assignments for the logged-in professor's courses |
-| GET    | `/api/assignments/:assignment_id`     | -                                             | One assignment |
-| POST   | `/api/assignments`                    | `{ title, description, due_date, course_id }` | Created assignment |
-| PATCH  | `/api/assignments/:assignment_id`     | `{ title, description, due_date }`            | Updated assignment |
-| DELETE | `/api/assignments/:assignment_id`     | -                                             | Deleted assignment |
-| GET    | `/api/assignments/:assignment_id/status` | -                                          | `[{ user_id, username, completed }]` |
-| POST   | `/api/assignments/:assignment_id/complete` | -                                       | `true` |
-| DELETE | `/api/assignments/:assignment_id/complete` | -                                      | `204 No Content` |
+| Method | Endpoint                                   | Request Body                                  | Response                                                 |
+| ------ | ------------------------------------------ | --------------------------------------------- | -------------------------------------------------------- |
+| GET    | `/api/assignments/students/:user_id`       | -                                             | Assignments for the logged-in student's enrolled courses |
+| GET    | `/api/assignments/professors/:user_id`     | -                                             | Assignments for the logged-in professor's courses        |
+| GET    | `/api/assignments/:assignment_id`          | -                                             | One assignment                                           |
+| POST   | `/api/assignments`                         | `{ title, description, due_date, course_id }` | Created assignment                                       |
+| PATCH  | `/api/assignments/:assignment_id`          | `{ title, description, due_date }`            | Updated assignment                                       |
+| DELETE | `/api/assignments/:assignment_id`          | -                                             | Deleted assignment                                       |
+| GET    | `/api/assignments/:assignment_id/status`   | -                                             | `[{ user_id, username, completed }]`                     |
+| POST   | `/api/assignments/:assignment_id/complete` | -                                             | `true`                                                   |
+| DELETE | `/api/assignments/:assignment_id/complete` | -                                             | `204 No Content`                                         |
 
 ### Student progress endpoints
 
-| Method | Endpoint                    | Request Body | Response |
-| ------ | --------------------------- | ------------ | -------- |
-| GET    | `/api/users/:user_id/enrollments` | -      | Courses the logged-in student is enrolled in |
-| GET    | `/api/users/:user_id/completions` | -       | Assignments the logged-in student has completed |
+| Method | Endpoint                          | Request Body | Response                                        |
+| ------ | --------------------------------- | ------------ | ----------------------------------------------- |
+| GET    | `/api/users/:user_id/enrollments` | -            | Courses the logged-in student is enrolled in    |
+| GET    | `/api/users/:user_id/completions` | -            | Assignments the logged-in student has completed |
 
 ## Setup
 
@@ -204,22 +208,22 @@ The frontend runs on `http://localhost:5173`. The Vite dev proxy forwards all `/
 
 After running `node db/seed.js`, these accounts are available:
 
-| Username | Email | Role | Password |
-| -------- | ----- | ---- | -------- |
-| mitsuru | mitsuru@gekkan.edu | professor | kirijo123 |
-| yukari | yukari@gekkan.edu | student | archer456 |
-| junpei | junpei@gekkan.edu | student | ace789 |
-| aigis | aigis@gekkan.edu | student | toaster999 |
-| akihiko | akihiko@gekkan.edu | professor | boxing321 |
+| Username | Email              | Role      | Password   |
+| -------- | ------------------ | --------- | ---------- |
+| mitsuru  | mitsuru@gekkan.edu | professor | kirijo123  |
+| yukari   | yukari@gekkan.edu  | student   | archer456  |
+| junpei   | junpei@gekkan.edu  | student   | ace789     |
+| aigis    | aigis@gekkan.edu   | student   | toaster999 |
+| akihiko  | akihiko@gekkan.edu | professor | boxing321  |
 
 ## Seed Data
 
 The seed file creates two courses:
 
-| Course | Professor | Max Capacity |
-| ------ | --------- | ------------ |
-| Shadow Tactics | mitsuru | 30 |
-| Persona Combat Training | akihiko | 20 |
+| Course                  | Professor | Max Capacity |
+| ----------------------- | --------- | ------------ |
+| Shadow Tactics          | mitsuru   | 30           |
+| Persona Combat Training | akihiko   | 20           |
 
 It also creates sample enrollments, assignments, and assignment completion records so both student and professor dashboards have data immediately after seeding.
 
