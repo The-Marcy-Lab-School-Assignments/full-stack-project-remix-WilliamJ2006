@@ -22,6 +22,14 @@ const listUsersByRole = async (req, res, next) => {
 const listStudentsByProfessorCourses = async (req, res, next) => {
   try {
     const userId = Number(req.params.user_id);
+    if (
+      req.session.user.role !== 'professor' ||
+      userId !== req.session.user.user_id
+    ) {
+      return res.status(403).send({
+        message: 'You can only view your own students.',
+      });
+    }
     const students = await userModel.listUserByEnrollments(userId);
     res.send(students);
   } catch (err) {
@@ -32,6 +40,14 @@ const listStudentsByProfessorCourses = async (req, res, next) => {
 const listProfessorsByStudentCourses = async (req, res, next) => {
   try {
     const userId = Number(req.params.user_id);
+    if (
+      req.session.user.role !== 'student' ||
+      userId !== req.session.user.user_id
+    ) {
+      return res.status(403).send({
+        message: 'You can only view your own professors.',
+      });
+    }
     const professors = await userModel.listUsersByCourses(userId);
     res.send(professors);
   } catch (err) {
@@ -54,7 +70,7 @@ const updateUser = async (req, res, next) => {
       return res.status(404).send({
         message: 'Please fill out atleast one field',
       });
-      
+
     const user = await userModel.update(userId, password, email);
 
     if (!user) {
