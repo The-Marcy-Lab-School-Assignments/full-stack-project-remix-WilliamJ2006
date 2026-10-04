@@ -95,29 +95,6 @@ module.exports.create = async (
   return rows[0];
 };
 
-module.exports.update = async (
-  course_name,
-  description,
-  max_capacity,
-  professor_id,
-) => {
-  const query = `INSERT INTO courses (
-      professor_id,
-      course_name,
-      description,
-      max_capacity
-    )
-    VALUES ($1, $2, $3, $4)
-    RETURNING *`;
-  const { rows } = await pool.query(query, [
-    professor_id,
-    course_name,
-    description,
-    max_capacity,
-  ]);
-  return rows[0];
-};
-
 module.exports.find = async (course_id) => {
   const query = `SELECT * FROM courses WHERE course_id = $1`;
   const { rows } = await pool.query(query, [course_id]);
