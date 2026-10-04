@@ -105,9 +105,9 @@ app.delete('/api/auth/logout', logout);
 // User routes
 // ====================================
 
-app.get('/api/users', listUsers);
+app.get('/api/users', checkAuthentication, listUsers);
 
-app.post('/api/users/role', listUsersByRole);
+app.post('/api/users/role', checkAuthentication, listUsersByRole);
 
 app.get(
   '/api/users/:user_id/students',
