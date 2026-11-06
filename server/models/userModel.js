@@ -3,36 +3,143 @@ const pool = require('../db/pool');
 
 const SALT_ROUNDS = 8;
 
-// Creates a new user. Returns { user_id, username } — never exposes password_hash.
-module.exports.create = async (username, password) => {
+module.exports.list = async () => {
+  const { rows } = await pool.query(
+    `SELECT user_id, username, email, role FROM users ORDER BY user_id`,
+  );
+  return rows;
+};
+
+module.exports.listByRole = async (role) => {
+  const { rows } = await pool.query(
+    `
+    SELECT DISTINCT
+      users.user_id,
+      users.username,
+      users.email,
+      users.role
+    FROM users
+    WHERE users.role = $1
+    ORDER BY users.user_id
+    `,
+    [role],
+  );
+
+  return rows;
+};
+
+module.exports.listUserByEnrollments = async (user_id) => {
+  const { rows } = await pool.query(
+    `
+    SELECT DISTINCT
+      users.user_id,
+      users.username,
+      users.email,
+      users.role,
+      courses.course_id,
+      courses.course_name
+    FROM courses
+    JOIN enrollments
+      ON courses.course_id = enrollments.course_id
+    JOIN users
+      ON enrollments.student_id = users.user_id
+    WHERE courses.professor_id = $1
+    ORDER BY users.username
+    `,
+    [user_id],
+  );
+
+  return rows;
+};
+
+module.exports.listUsersByCourses = async (user_id) => {
+  const { rows } = await pool.query(
+    `
+    SELECT DISTINCT
+      users.user_id,
+      users.username,
+      users.email,
+      users.role,
+      courses.course_id,
+      courses.course_name
+    FROM enrollments
+    JOIN courses
+      ON enrollments.course_id = courses.course_id
+    JOIN users
+      ON courses.professor_id = users.user_id
+    WHERE enrollments.student_id = $1
+    ORDER BY courses.course_name
+    `,
+    [user_id],
+  );
+
+  return rows;
+};
+
+module.exports.find = async (user_id) => {
+  const { rows } = await pool.query(
+    `SELECT user_id, username, email, role FROM users WHERE user_id = $1`,
+    [user_id],
+  );
+  return rows[0] || null;
+};
+
+module.exports.findByUsername = async (username) => {
+  const { rows } = await pool.query(
+    `SELECT user_id, username, email, role FROM users WHERE username = $1`,
+    [username],
+  );
+  return rows[0] || null;
+};
+
+module.exports.findByEmail = async (email) => {
+  const { rows } = await pool.query(
+    `SELECT user_id, username, email, role FROM users WHERE email = $1`,
+    [email],
+  );
+  return rows[0] || null;
+};
+
+module.exports.create = async (username, password, email, role) => {
   const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
-  const query = 'INSERT INTO users (username, password_hash) VALUES ($1, $2) RETURNING user_id, username';
-  const { rows } = await pool.query(query, [username, passwordHash]);
+  const query = `INSERT INTO users (username, password_hash, email, role) VALUES ($1, $2, $3, $4) RETURNING user_id, username, email, role`;
+  const { rows } = await pool.query(query, [
+    username.trim(),
+    passwordHash,
+    email.trim(),
+    role,
+  ]);
   return rows[0];
 };
 
-// Returns { user_id, username } or null
-module.exports.find = async (user_id) => {
-  const query = 'SELECT user_id, username FROM users WHERE user_id = $1';
-  const { rows } = await pool.query(query, [user_id]);
-  return rows[0] || null;
-};
-
-// Returns { user_id, username } or null — used to check if a username is taken
-module.exports.findByUsername = async (username) => {
-  const query = 'SELECT user_id, username FROM users WHERE username = $1';
-  const { rows } = await pool.query(query, [username]);
-  return rows[0] || null;
-};
-
-// Verifies a password against the stored hash. Returns { user_id, username } if
-// valid, or null if the username doesn't exist or the password is wrong.
 module.exports.validatePassword = async (username, password) => {
-  const query = 'SELECT * FROM users WHERE username = $1';
-  const { rows } = await pool.query(query, [username]);
+  const { rows } = await pool.query(`SELECT * FROM users WHERE username = $1`, [
+    username,
+  ]);
   const user = rows[0];
   if (!user) return null;
-  const isValid = await bcrypt.compare(password, user.password_hash);
-  if (!isValid) return null;
-  return { user_id: user.user_id, username: user.username };
+
+  const compare = await bcrypt.compare(password, user.password_hash);
+  if (!compare) return null;
+
+  return {
+    user_id: user.user_id,
+    username: user.username,
+    email: user.email,
+    role: user.role,
+  };
+};
+
+module.exports.update = async (user_id, password, email) => {
+  let passwordHash = null;
+  if (password) passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
+  const query = `UPDATE users SET password_hash = COALESCE($1, password_hash), email = COALESCE($2, email) WHERE user_id = $3 RETURNING user_id, username, email, role`;
+  const { rows } = await pool.query(query, [passwordHash, email, user_id]);
+  return rows[0] || null;
+};
+
+module.exports.delete = async (user_id) => {
+  const query = `DELETE FROM users WHERE user_id = $1 RETURNING user_id, username, email, role`;
+  const { rows } = await pool.query(query, [user_id]);
+  return rows[0] || null;
 };

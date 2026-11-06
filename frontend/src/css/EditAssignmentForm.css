@@ -1,0 +1,59 @@
+/* =========================
+   EDIT ASSIGNMENT PAGE
+========================= */
+
+.editAssignmentPage {
+  min-height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 2rem;
+
+  box-sizing: border-box;
+
+  position: relative;
+
+  background:
+    linear-gradient(
+      180deg,
+      #74f6ff 0%,
+      #29c8ff 18%,
+      #0075ff 42%,
+      #003fc7 70%,
+      #00115a 100%
+    );
+
+  overflow: hidden;
+}
+
+/* optional glow overlay */
+
+.editAssignmentPage::before {
+  content: '';
+
+  position: absolute;
+  inset: 0;
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(255, 255, 255, 0.08),
+      transparent 60%
+    );
+
+  pointer-events: none;
+}
+
+/* centered form */
+
+.editAssignmentPage .assignmentForm {
+  position: relative;
+
+  width: min(100%, 520px);
+
+  margin: 0;
+
+  z-index: 2;
+}
