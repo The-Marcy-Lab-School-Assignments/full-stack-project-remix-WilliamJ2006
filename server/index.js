@@ -195,7 +195,7 @@ app.get(
 // Courses routes
 // ====================================
 
-app.get('/api/courses', listCourses);
+app.get('/api/courses', checkAuthentication, listCourses);
 
 app.get(
   '/api/courses/students/:user_id',
